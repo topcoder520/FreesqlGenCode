@@ -1,0 +1,1 @@
+FreeSql.Generator -Razor 1 -NameOptions 0,0,0,1 -NameSpace Model -DB "Sqlite,data source=C:/Users/Administrator/Desktop/freesqlgcodedb.db"

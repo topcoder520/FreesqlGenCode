@@ -1,0 +1,73 @@
+@{
+    switch (Model.fsql.Ado.DataType)
+    {
+        case FreeSql.DataType.PostgreSQL:
+@:using System;
+@:using System.Collections;
+@:using System.Collections.Generic;
+@:using System.Linq;
+@:using System.Reflection;
+@:using System.Threading.Tasks;
+@:using Newtonsoft.Json;
+@:using FreeSql.DataAnnotations;
+@:using System.Net;
+@:using Newtonsoft.Json.Linq;
+@:using System.Net.NetworkInformation;
+@:using NpgsqlTypes;
+@:using Npgsql.LegacyPostgis;
+            break;
+        case FreeSql.DataType.SqlServer:
+        case FreeSql.DataType.MySql:
+        default:
+@:using System;
+@:using System.Collections;
+@:using System.Collections.Generic;
+@:using System.Linq;
+@:using System.Reflection;
+@:using System.Threading.Tasks;
+@:using Newtonsoft.Json;
+@:using FreeSql.DataAnnotations;
+            break;
+    }
+}
+namespace @Model.Namespace {
+@{
+	Func<string, string> GetAttributeString = attr =>
+	{
+		if (string.IsNullOrEmpty(attr)) return "";
+		return string.Concat(", ", attr.Trim('[', ']'));
+	};
+	Func<string, string> GetDefaultValue = defval =>
+	{
+		if (string.IsNullOrEmpty(defval)) return "";
+		return " = " + defval + ";";
+	};
+}
+
+@{
+	if (!string.IsNullOrWhiteSpace(Model.TableInfo.Comment))
+	{
+	@:/// <summary>
+	@:/// @Model.TableInfo.Comment.Replace("\r\n", "\n").Replace("\n", "\r\n		/// ")
+    @:/// </summary>
+	}
+}
+    [JsonObject(MemberSerialization.OptIn)@GetAttributeString(Model.GetTableAttribute())]
+    public partial class @Model.GetCsTableName(Model.FullTableName) {
+
+        @foreach (var col in Model.TableInfo.Columns)
+        {
+
+            if (string.IsNullOrEmpty(col.Comment) == false)
+            {
+                @:/// <summary>
+                @:/// @col.Comment.Replace("\r\n", "\n").Replace("\n", "\r\n		/// ")
+                @:/// </summary>
+            }
+            @:@("[JsonProperty" + GetAttributeString(Model.GetColumnAttribute(col, true)) + "]")
+            @:public @Model.GetCsName(col.Name) @Model.GetCsName(col.Name) { get; set; }@GetDefaultValue(Model.GetColumnDefaultValue(col, false))
+            @:
+        }
+    }
+    @Model.GetMySqlEnumSetDefine()
+}
