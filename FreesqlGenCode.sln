@@ -17,10 +17,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RazorTemplates", "RazorTemplates", "{7C1CFD24-E5BC-4C40-9BDC-192E8130F28B}"
 	ProjectSection(SolutionItems) = preProject
+		GenTemplate\Templates\BllClassTemplate.cshtml = GenTemplate\Templates\BllClassTemplate.cshtml
+		GenTemplate\Templates\DalClassTemplate.cshtml = GenTemplate\Templates\DalClassTemplate.cshtml
 		GenTemplate\Templates\EntityClassTemplate.cshtml = GenTemplate\Templates\EntityClassTemplate.cshtml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenTemplate", "GenTemplate\GenTemplate.csproj", "{1C848E5F-64CB-4590-AA6C-DFC90C12C003}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenTemplate", "GenTemplate\GenTemplate.csproj", "{1C848E5F-64CB-4590-AA6C-DFC90C12C003}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

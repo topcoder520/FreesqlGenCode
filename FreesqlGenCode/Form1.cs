@@ -2,7 +2,10 @@ using BLL;
 using Common;
 using Context;
 using DataDefine;
+using FreesqlGenCode.controls;
 using Model;
+using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace FreesqlGenCode
 {
@@ -14,6 +17,7 @@ namespace FreesqlGenCode
         {
             InitializeComponent();
             InitTreeView();
+            InitTabControl();
         }
         /// <summary>
         /// 初始化TreeNode
@@ -42,18 +46,15 @@ namespace FreesqlGenCode
             treeView1.ExpandAll();
             treeView1.EndUpdate();
             #endregion
+        }
 
+        private void InitTabControl() {
             #region 初始化tabControl
             ImageList tabImageList = new ImageList();
             tabImageList.Images.Add(Properties.Resources.close);
             tabControl1.ImageList = tabImageList;
-            if (tabControl1.TabPages.Count > 0)
-            {
-                
-            }
+            //tabControl1.TabPages.Clear();
             #endregion
-
-
         }
 
         private void fsPictureBox1_FsClick(object sender, EventArgs e)
@@ -177,6 +178,8 @@ namespace FreesqlGenCode
         private void rootTreeNodeReToolStripMenuItem_Click(object sender, EventArgs e)
         {
             InitTreeView();
+            //暂时
+            tabControl1.TabPages.Clear();
         }
         /// <summary>
         /// TreeNode 关闭连接
@@ -195,19 +198,11 @@ namespace FreesqlGenCode
             treeView1.EndUpdate();
             FsDatabase fsDatabase = (FsDatabase)node.Tag;
             Context.ContextUtils.DelDBConnect(fsDatabase.DBKey);
-            CloseResourceClear();
+
+            tabControl1.TabPages.Clear();
         }
 
-        private void CloseResourceClear()
-        {
-            dataGridViewTop1.Rows.Clear();
-            tabPage1.Text = "";
-            tabPage1.ToolTipText = "";
-
-            genCodeRichTextBox1.Text = "";
-            selectTableNode = null;
-            listFileInfo.Clear();
-        }
+        
 
         /// <summary>
         /// TreeNode 打开节点连接
@@ -321,14 +316,8 @@ namespace FreesqlGenCode
             treeView1.BeginUpdate();
             node.Nodes.Clear();
             treeView1.EndUpdate();
-            CloseResourceClear();
+            tabControl1.TabPages.Clear();
         }
-
-        private List<FileInfo> listFileInfo = new List<FileInfo>();
-        delegate void DelegateMethod(int a);
-
-
-        TreeNode? selectTableNode;
 
         /// <summary>
         /// 代码生成
@@ -343,10 +332,6 @@ namespace FreesqlGenCode
             {
                 return;
             }
-            tabPage1.Select();
-            tabControl1.SelectedTab = tabPage1;
-            selectTableNode = null;
-            listFileInfo.Clear();
 
             FormLoading frmLoading = null;
             ThreadPool.QueueUserWorkItem(new WaitCallback(a =>
@@ -358,54 +343,68 @@ namespace FreesqlGenCode
                 });
             }));
 
+            FileInfo[] fileInfos = FileUtil.loadTemplates("");
+
             FsDatabase fsDatabase = (FsDatabase)node.Tag;
             DBConnect dBConnect = ContextUtils.GetDBConnect(fsDatabase.DBKey);
             if (dBConnect.TestConnect())
             {
-                selectTableNode = node;
-
                 TreeNode parentNode = node.Parent;
-                dataGridViewTop1.Rows.Clear();
                 string selTable = parentNode.Text + "." + node.Text;
                 List<List<string>> listCols = dBConnect.GetColInfos(selTable);
-                foreach(List<string> colInfo in listCols)
-                {
-                    dataGridViewTop1.Rows.Add(colInfo.ToArray());
-                }
-                //选项卡
-                tabPage1.Text = "单表代码生成："+selTable;
-                tabPage1.ToolTipText= selTable;
-
-                selectTempleteComboBox1.Items.Clear();
-
-
-                Task.Run(() => {
-                    FileInfo[] fileInfos = FileUtil.loadTemplates("");
-                    var deleteMethod1 = new DelegateMethod((a) => {
-                        this.selectTempleteComboBox1.Items.Insert(a, fileInfos[a].Name);
-                    });
-                    for (int i = 0; i < fileInfos.Length; i++)
-                    {
-                        this.selectTempleteComboBox1.Invoke(deleteMethod1,i);
-                        listFileInfo.Add(fileInfos[i]);
-                    }
-                    if (fileInfos.Length > 0 && this.selectTempleteComboBox1.Items.Count>0)
-                    {
-                        this.selectTempleteComboBox1.Invoke(() => {
-                            this.selectTempleteComboBox1.SelectedItem = this.selectTempleteComboBox1.Items[0];
-                            string htmlTemplate = File.ReadAllText(fileInfos[0].FullName);
-                            this.genCodeRichTextBox1.Text = htmlTemplate;
-                        });
-                    }
-                    
-                });
+                TabPageTag tag = new TabPageTag();
+                tag.DBKey = fsDatabase.DBKey;
+                tag.TableName = selTable;
+                tag.fsDatabase = fsDatabase;
+                tag.treeNodeTableNode = node;
+                openSingleTableTabPage(listCols,tag,fileInfos);
             }
             else
             {
                 MessageBox.Show("数据库连接不可用!"+dBConnect.GetException());
                 return;
             }
-            this.Invoke((Action)delegate () { frmLoading?.Close(); });
+            this.Invoke((Action)delegate () { 
+                frmLoading?.Close(); 
+            });
+            treeView1.SelectedNode = node;
+        }
+
+        private void openSingleTableTabPage(List<List<string>> listCols, TabPageTag tag, FileInfo[] fileInfos)
+        {
+            int cntPages = tabControl1.TabPages.Count;
+            TabPage? tabPage = null;
+            for (int i = 0; i < cntPages; i++)
+            {
+                TabPage next = tabControl1.TabPages[i];
+                TabPageTag nextTag = (TabPageTag)next.Tag;
+                if(nextTag.DBKey == tag.DBKey && nextTag.TableName == tag.TableName)
+                {
+                    tabPage = next;
+                    break;
+                }
+            }
+            if(tabPage == null)
+            {
+                tabPage = new TabPage();
+                MySingleControl.listFileInfo = fileInfos.ToList();
+                MySingleControl mySingleControl = new MySingleControl();
+                mySingleControl.Dock = System.Windows.Forms.DockStyle.Fill;
+                mySingleControl.Location = new System.Drawing.Point(0, 0);
+                mySingleControl.Name = "mySingleControl";
+                mySingleControl.Padding = new System.Windows.Forms.Padding(3);
+                mySingleControl.TabIndex = 0;
+                tabPage.Controls.Add(mySingleControl);
+                tabPage.Text = "单表 "+tag.TableName;
+                tabPage.ToolTipText = tabPage.Text;
+                foreach (List<string> colInfo in listCols)
+                {
+                    mySingleControl.dataGridViewTop1.Rows.Add(colInfo.ToArray());
+                }
+                tabPage.Tag = tag;
+                tabControl1.TabPages.Add(tabPage);
+            }
+            tabControl1.SelectedTab= tabPage;
         }
 
 
@@ -416,68 +415,21 @@ namespace FreesqlGenCode
         /// <param name="e"></param>
         private void mulTableGenToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            tabPage2.Select();
-            tabControl1.SelectedTab = tabPage2;
+            //tabPage2.Select();
+            //tabControl1.SelectedTab = tabPage2;
         }
 
-        /// <summary>
-        /// 选择模板
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void selectTempleteComboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string fileName = selectTempleteComboBox1.SelectedItem as string;
-            FileInfo fileInfo = listFileInfo.Where(a => a.Name == fileName).FirstOrDefault();
-            if (fileInfo != null)
-            {
-                string htmlTemplate = File.ReadAllText(fileInfo.FullName);
-                this.genCodeRichTextBox1.Text = htmlTemplate;
-            }
-        }
+       
+    }
 
-        /// <summary>
-        /// 生成代码
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void genCodeButton1_Click(object sender, EventArgs e)
-        {
-            if(selectTableNode == null)
-            {
-                MessageBox.Show("请选择数据表");
-                return;
-            }
-            if (string.IsNullOrWhiteSpace(namespaceText.Text))
-            {
-                MessageBox.Show("请输入命名空间");
-                return;
-            }
-            if(listFileInfo.Count == 0)
-            {
-                MessageBox.Show("请选择模板");
-                return;
-            }
-            FsDatabase database = (FsDatabase)selectTableNode.Tag;
-            TaskBuild task = ContextUtils.CreateTaskBuild(database.DBKey,selectTableNode.Parent.Text);
-            task.tableName = selectTableNode.Text;
-            task.FileName = selectTempleteComboBox1.SelectedText;
-            task.NamespaceName = namespaceText.Text;
-            task.FilterTableChar = filterTablenameText.Text;
-            task.FirstUpper = firstCharUpperCheckBox1.Checked;
-            task.AllLower = allLowerCheckBox1.Checked;
-            task.UnderLineTranser = underLineToCheckBox2.Checked;
-            task.Templates = new Template[] { new Template() {
-                TemplatePath = selectTempleteComboBox1.SelectedItem as string,
-                TemplateText = genCodeRichTextBox1.Text,
-                IsChangeText = false,
-            } };
-            FormShowGenCode formShowGenCode = new FormShowGenCode(listFileInfo, task);
-            DialogResult rs =  formShowGenCode.ShowDialog();
-            if(rs == DialogResult.OK)
-            {
+    class TabPageTag
+    {
+        public string DBKey { get; set; }
 
-            }
-        }
+        public string TableName { get; set; }
+
+        public FsDatabase fsDatabase { get; set; }
+
+        public TreeNode treeNodeTableNode { get; set; }
     }
 }
