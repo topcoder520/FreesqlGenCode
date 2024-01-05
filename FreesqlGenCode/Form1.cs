@@ -53,7 +53,7 @@ namespace FreesqlGenCode
             ImageList tabImageList = new ImageList();
             tabImageList.Images.Add(Properties.Resources.close);
             tabControl1.ImageList = tabImageList;
-            //tabControl1.TabPages.Clear();
+            
             #endregion
         }
 
@@ -67,6 +67,7 @@ namespace FreesqlGenCode
                 
             }
             InitTreeView();
+            ClearTabPages("");
         }
         /// <summary>
         /// 删除连接
@@ -83,6 +84,7 @@ namespace FreesqlGenCode
                 MessageBox.Show("请选择连接节点");
                 return;
             }
+            FsDatabase fsDatabase = (FsDatabase)selectNode.Tag;
             DialogResult rs =  MessageBox.Show("确认删除该连接吗?","提示", MessageBoxButtons.YesNo);
             if (rs == DialogResult.Yes)
             {
@@ -90,6 +92,7 @@ namespace FreesqlGenCode
                 if (cnt > 0)
                 {
                     InitTreeView();
+                    ClearTabPages(fsDatabase.DBKey);
                 }
                 else
                 {
@@ -179,7 +182,7 @@ namespace FreesqlGenCode
         {
             InitTreeView();
             //暂时
-            tabControl1.TabPages.Clear();
+            ClearTabPages("");
         }
         /// <summary>
         /// TreeNode 关闭连接
@@ -199,7 +202,46 @@ namespace FreesqlGenCode
             FsDatabase fsDatabase = (FsDatabase)node.Tag;
             Context.ContextUtils.DelDBConnect(fsDatabase.DBKey);
 
-            tabControl1.TabPages.Clear();
+            ClearTabPages(fsDatabase.DBKey);
+        }
+
+        private void ClearTabPages(string DBKey,string DataBase="")
+        {
+            int count = tabControl1.TabPages.Count;
+            for (int i = count -1; i >0; i--)
+            {
+                if (!string.IsNullOrWhiteSpace(DBKey) && !string.IsNullOrWhiteSpace(DataBase))
+                {//刪除数据库相关的tabpage
+                    TabPage tabPage = tabControl1.TabPages[i];
+                    if (tabPage.Tag != null && tabPage.Tag is not TabPageTag)
+                    {
+                        continue;
+                    }
+                    TabPageTag tag = tabPage.Tag as TabPageTag;
+                    TreeNode dataBaseNode = tag.treeNodeTableNode.Parent;
+                    if (tag.DBKey == DBKey && DataBase == dataBaseNode.Text)
+                    {
+                        tabControl1.TabPages.RemoveAt(i);
+                    }
+                }
+                else if (!string.IsNullOrWhiteSpace(DBKey))
+                {//删除连接相关的tabpage
+                    TabPage tabPage = tabControl1.TabPages[i];
+                    if (tabPage.Tag != null && tabPage.Tag is not TabPageTag)
+                    {
+                        continue;
+                    }
+                    TabPageTag tag = tabPage.Tag as TabPageTag;
+                    if (tag.DBKey == DBKey)
+                    {
+                        tabControl1.TabPages.RemoveAt(i);
+                    }
+                }
+                else
+                {//删除所有tabpage
+                    tabControl1.TabPages.RemoveAt(i);
+                }
+            }
         }
 
         
@@ -316,7 +358,8 @@ namespace FreesqlGenCode
             treeView1.BeginUpdate();
             node.Nodes.Clear();
             treeView1.EndUpdate();
-            tabControl1.TabPages.Clear();
+            FsDatabase fsDatabase = node.Tag as FsDatabase;
+            ClearTabPages(fsDatabase.DBKey,node.Text);
         }
 
         /// <summary>
@@ -377,7 +420,10 @@ namespace FreesqlGenCode
             for (int i = 0; i < cntPages; i++)
             {
                 TabPage next = tabControl1.TabPages[i];
-                TabPageTag nextTag = (TabPageTag)next.Tag;
+                if(next.Tag == null || next.Tag is not TabPageTag nextTag)
+                {
+                    continue;
+                }
                 if(nextTag.DBKey == tag.DBKey && nextTag.TableName == tag.TableName)
                 {
                     tabPage = next;

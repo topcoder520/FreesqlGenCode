@@ -59,6 +59,7 @@ namespace FreesqlGenCode
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.tabControlPanel1 = new System.Windows.Forms.Panel();
             this.tabControl1 = new FreesqlGenCode.controls.MyTabControl();
+            this.firstTabPage1 = new System.Windows.Forms.TabPage();
             this.rootTreeNodeContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.rootTreeNodeReToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rootTreeNodeAddToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,12 +74,15 @@ namespace FreesqlGenCode
             this.tableContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.modelGenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mulTableGenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.label1 = new System.Windows.Forms.Label();
             this.topFlowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.tabControlPanel1.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.firstTabPage1.SuspendLayout();
             this.rootTreeNodeContextMenuStrip1.SuspendLayout();
             this.conctContextMenuStrip1.SuspendLayout();
             this.dbContextMenuStrip1.SuspendLayout();
@@ -190,6 +194,7 @@ namespace FreesqlGenCode
             // 
             // tabControl1
             // 
+            this.tabControl1.Controls.Add(this.firstTabPage1);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
             this.tabControl1.ItemSize = new System.Drawing.Size(200, 30);
@@ -200,6 +205,16 @@ namespace FreesqlGenCode
             this.tabControl1.Size = new System.Drawing.Size(1296, 720);
             this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabControl1.TabIndex = 0;
+            // 
+            // firstTabPage1
+            // 
+            this.firstTabPage1.Controls.Add(this.label1);
+            this.firstTabPage1.Location = new System.Drawing.Point(4, 34);
+            this.firstTabPage1.Name = "firstTabPage1";
+            this.firstTabPage1.Size = new System.Drawing.Size(1288, 682);
+            this.firstTabPage1.TabIndex = 0;
+            this.firstTabPage1.Text = "首页";
+            this.firstTabPage1.UseVisualStyleBackColor = true;
             // 
             // rootTreeNodeContextMenuStrip1
             // 
@@ -309,21 +324,33 @@ namespace FreesqlGenCode
             this.mulTableGenToolStripMenuItem.Text = "多表代码生成";
             this.mulTableGenToolStripMenuItem.Click += new System.EventHandler(this.mulTableGenToolStripMenuItem_Click);
             // 
-            // Form1Copy
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(287, 99);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(208, 24);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "多表代码生成默认在首页";
+            // 
+            // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1700, 821);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.topFlowLayoutPanel1);
-            this.Name = "Form1Copy";
-            this.Text = "测试界面";
+            this.Name = "Form1";
+            this.Text = "FreesqlGenCode代码工具";
             this.topFlowLayoutPanel1.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.tabControlPanel1.ResumeLayout(false);
+            this.tabControl1.ResumeLayout(false);
+            this.firstTabPage1.ResumeLayout(false);
+            this.firstTabPage1.PerformLayout();
             this.rootTreeNodeContextMenuStrip1.ResumeLayout(false);
             this.conctContextMenuStrip1.ResumeLayout(false);
             this.dbContextMenuStrip1.ResumeLayout(false);
@@ -355,5 +382,7 @@ namespace FreesqlGenCode
         private ContextMenuStrip tableContextMenuStrip1;
         private ToolStripMenuItem modelGenToolStripMenuItem;
         private ToolStripMenuItem mulTableGenToolStripMenuItem;
+        private TabPage firstTabPage1;
+        private Label label1;
     }
 }

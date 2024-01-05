@@ -28,12 +28,15 @@ namespace FreesqlGenCode.controls
 
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.tabPanelShowGenCodeTemple1 = new System.Windows.Forms.Panel();
+            this.tabPanelShowGenCodeTemplePanel1 = new System.Windows.Forms.Panel();
             this.genCodeBottomPanel1 = new System.Windows.Forms.Panel();
+            this.mysingleTabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
             this.genCodeRichTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.modelRichTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.setParamGroupBox1 = new System.Windows.Forms.GroupBox();
             this.genCodeTopPanel1 = new System.Windows.Forms.Panel();
-            this.genCodeButton1 = new System.Windows.Forms.Button();
             this.underLineToCheckBox2 = new System.Windows.Forms.CheckBox();
             this.allLowerCheckBox1 = new System.Windows.Forms.CheckBox();
             this.firstCharUpperCheckBox1 = new System.Windows.Forms.CheckBox();
@@ -55,63 +58,109 @@ namespace FreesqlGenCode.controls
             this.ColIsIdentity = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColIsNullable = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColComent = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            
-            this.tabPanelShowGenCodeTemple1.SuspendLayout();
+            this.setParamPanel1 = new System.Windows.Forms.Panel();
+            this.tabPanelShowGenCodeTemplePanel1.SuspendLayout();
             this.genCodeBottomPanel1.SuspendLayout();
+            this.mysingleTabControl1.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            this.setParamGroupBox1.SuspendLayout();
             this.genCodeTopPanel1.SuspendLayout();
             this.tabPanelTableTop1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewTop1)).BeginInit();
+            this.setParamPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tabControlPanel1
+            // tabPanelShowGenCodeTemplePanel1
             // 
-            // 
-            // tabPage1
-            // 
-            this.Controls.Add(this.tabPanelShowGenCodeTemple1);
-            this.Controls.Add(this.tabPanelTableTop1);
-            this.Location = new System.Drawing.Point(4, 34);
-            this.Name = "tabPage1";
-            this.Padding = new System.Windows.Forms.Padding(3);
-            this.Size = new System.Drawing.Size(1288, 682);
-            this.TabIndex = 0;
-            this.Text = "单表";
-            // 
-            // tabPanelShowGenCodeTemple1
-            // 
-            this.tabPanelShowGenCodeTemple1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tabPanelShowGenCodeTemple1.Controls.Add(this.genCodeBottomPanel1);
-            this.tabPanelShowGenCodeTemple1.Controls.Add(this.genCodeTopPanel1);
-            this.tabPanelShowGenCodeTemple1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabPanelShowGenCodeTemple1.Location = new System.Drawing.Point(3, 281);
-            this.tabPanelShowGenCodeTemple1.Name = "tabPanelShowGenCodeTemple1";
-            this.tabPanelShowGenCodeTemple1.Size = new System.Drawing.Size(1282, 398);
-            this.tabPanelShowGenCodeTemple1.TabIndex = 1;
+            this.tabPanelShowGenCodeTemplePanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabPanelShowGenCodeTemplePanel1.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPanelShowGenCodeTemplePanel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tabPanelShowGenCodeTemplePanel1.Controls.Add(this.genCodeBottomPanel1);
+            this.tabPanelShowGenCodeTemplePanel1.Location = new System.Drawing.Point(2, 460);
+            this.tabPanelShowGenCodeTemplePanel1.Name = "tabPanelShowGenCodeTemplePanel1";
+            this.tabPanelShowGenCodeTemplePanel1.Size = new System.Drawing.Size(1282, 321);
+            this.tabPanelShowGenCodeTemplePanel1.TabIndex = 1;
             // 
             // genCodeBottomPanel1
             // 
-            this.genCodeBottomPanel1.Controls.Add(this.genCodeRichTextBox1);
+            this.genCodeBottomPanel1.Controls.Add(this.mysingleTabControl1);
             this.genCodeBottomPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.genCodeBottomPanel1.Location = new System.Drawing.Point(0, 136);
+            this.genCodeBottomPanel1.Location = new System.Drawing.Point(0, 0);
             this.genCodeBottomPanel1.Name = "genCodeBottomPanel1";
-            this.genCodeBottomPanel1.Size = new System.Drawing.Size(1280, 260);
+            this.genCodeBottomPanel1.Size = new System.Drawing.Size(1280, 319);
             this.genCodeBottomPanel1.TabIndex = 1;
+            // 
+            // mysingleTabControl1
+            // 
+            this.mysingleTabControl1.Controls.Add(this.tabPage1);
+            this.mysingleTabControl1.Controls.Add(this.tabPage2);
+            this.mysingleTabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mysingleTabControl1.Location = new System.Drawing.Point(0, 0);
+            this.mysingleTabControl1.Name = "mysingleTabControl1";
+            this.mysingleTabControl1.SelectedIndex = 0;
+            this.mysingleTabControl1.Size = new System.Drawing.Size(1280, 319);
+            this.mysingleTabControl1.TabIndex = 1;
+            this.mysingleTabControl1.SelectedIndexChanged += new System.EventHandler(this.mysingleTabControl1_SelectedIndexChanged);
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.genCodeRichTextBox1);
+            this.tabPage1.Location = new System.Drawing.Point(4, 33);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(1272, 282);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "模板";
+            this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // genCodeRichTextBox1
             // 
             this.genCodeRichTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.genCodeRichTextBox1.Font = new System.Drawing.Font("微软雅黑", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.genCodeRichTextBox1.Location = new System.Drawing.Point(0, 0);
+            this.genCodeRichTextBox1.Location = new System.Drawing.Point(3, 3);
             this.genCodeRichTextBox1.Name = "genCodeRichTextBox1";
-            this.genCodeRichTextBox1.Size = new System.Drawing.Size(1280, 260);
+            this.genCodeRichTextBox1.Size = new System.Drawing.Size(1266, 276);
             this.genCodeRichTextBox1.TabIndex = 0;
             this.genCodeRichTextBox1.Text = "";
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.modelRichTextBox1);
+            this.tabPage2.Location = new System.Drawing.Point(4, 33);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(1272, 282);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "生成代码";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // modelRichTextBox1
+            // 
+            this.modelRichTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.modelRichTextBox1.Location = new System.Drawing.Point(3, 3);
+            this.modelRichTextBox1.Name = "modelRichTextBox1";
+            this.modelRichTextBox1.Size = new System.Drawing.Size(1266, 276);
+            this.modelRichTextBox1.TabIndex = 0;
+            this.modelRichTextBox1.Text = "";
+            // 
+            // setParamGroupBox1
+            // 
+            this.setParamGroupBox1.Controls.Add(this.genCodeTopPanel1);
+            this.setParamGroupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.setParamGroupBox1.Location = new System.Drawing.Point(0, 0);
+            this.setParamGroupBox1.Name = "setParamGroupBox1";
+            this.setParamGroupBox1.Size = new System.Drawing.Size(1282, 176);
+            this.setParamGroupBox1.TabIndex = 2;
+            this.setParamGroupBox1.TabStop = false;
+            this.setParamGroupBox1.Text = "参数设置";
             // 
             // genCodeTopPanel1
             // 
             this.genCodeTopPanel1.BackColor = System.Drawing.Color.WhiteSmoke;
             this.genCodeTopPanel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.genCodeTopPanel1.Controls.Add(this.genCodeButton1);
             this.genCodeTopPanel1.Controls.Add(this.underLineToCheckBox2);
             this.genCodeTopPanel1.Controls.Add(this.allLowerCheckBox1);
             this.genCodeTopPanel1.Controls.Add(this.firstCharUpperCheckBox1);
@@ -121,21 +170,11 @@ namespace FreesqlGenCode.controls
             this.genCodeTopPanel1.Controls.Add(this.label2);
             this.genCodeTopPanel1.Controls.Add(this.namespaceText);
             this.genCodeTopPanel1.Controls.Add(this.label1);
-            this.genCodeTopPanel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.genCodeTopPanel1.Location = new System.Drawing.Point(0, 0);
+            this.genCodeTopPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.genCodeTopPanel1.Location = new System.Drawing.Point(3, 26);
             this.genCodeTopPanel1.Name = "genCodeTopPanel1";
-            this.genCodeTopPanel1.Size = new System.Drawing.Size(1280, 136);
+            this.genCodeTopPanel1.Size = new System.Drawing.Size(1276, 147);
             this.genCodeTopPanel1.TabIndex = 0;
-            // 
-            // genCodeButton1
-            // 
-            this.genCodeButton1.Location = new System.Drawing.Point(729, 87);
-            this.genCodeButton1.Name = "genCodeButton1";
-            this.genCodeButton1.Size = new System.Drawing.Size(112, 34);
-            this.genCodeButton1.TabIndex = 9;
-            this.genCodeButton1.Text = "生成代码";
-            this.genCodeButton1.UseVisualStyleBackColor = true;
-            this.genCodeButton1.Click += new System.EventHandler(this.genCodeButton1_Click);
             // 
             // underLineToCheckBox2
             // 
@@ -341,22 +380,44 @@ namespace FreesqlGenCode.controls
             this.ColComent.ReadOnly = true;
             this.ColComent.ToolTipText = "Coment";
             this.ColComent.Width = 150;
-            
             // 
-            // Form1
+            // setParamPanel1
             // 
-            this.tabPanelShowGenCodeTemple1.ResumeLayout(false);
+            this.setParamPanel1.BackColor = System.Drawing.SystemColors.Control;
+            this.setParamPanel1.Controls.Add(this.setParamGroupBox1);
+            this.setParamPanel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.setParamPanel1.Location = new System.Drawing.Point(3, 281);
+            this.setParamPanel1.Name = "setParamPanel1";
+            this.setParamPanel1.Size = new System.Drawing.Size(1282, 176);
+            this.setParamPanel1.TabIndex = 3;
+            // 
+            // MySingleControl
+            // 
+            this.BackColor = System.Drawing.SystemColors.Control;
+            this.Controls.Add(this.setParamPanel1);
+            this.Controls.Add(this.tabPanelShowGenCodeTemplePanel1);
+            this.Controls.Add(this.tabPanelTableTop1);
+            this.Location = new System.Drawing.Point(4, 34);
+            this.Name = "MySingleControl";
+            this.Padding = new System.Windows.Forms.Padding(3);
+            this.Size = new System.Drawing.Size(1288, 787);
+            this.tabPanelShowGenCodeTemplePanel1.ResumeLayout(false);
             this.genCodeBottomPanel1.ResumeLayout(false);
+            this.mysingleTabControl1.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
+            this.setParamGroupBox1.ResumeLayout(false);
             this.genCodeTopPanel1.ResumeLayout(false);
             this.genCodeTopPanel1.PerformLayout();
             this.tabPanelTableTop1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewTop1)).EndInit();
+            this.setParamPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         private Panel tabPanelTableTop1;
-        private Panel tabPanelShowGenCodeTemple1;
+        private Panel tabPanelShowGenCodeTemplePanel1;
         public DataGridView dataGridViewTop1;
         private DataGridViewTextBoxColumn ColName;
         private DataGridViewTextBoxColumn ColCsType;
@@ -380,6 +441,11 @@ namespace FreesqlGenCode.controls
         private CheckBox underLineToCheckBox2;
         private Panel genCodeBottomPanel1;
         private RichTextBox genCodeRichTextBox1;
-        private Button genCodeButton1;
+        private TabControl mysingleTabControl1;
+        private TabPage tabPage1;
+        private TabPage tabPage2;
+        private RichTextBox modelRichTextBox1;
+        private GroupBox setParamGroupBox1;
+        private Panel setParamPanel1;
     }
 }

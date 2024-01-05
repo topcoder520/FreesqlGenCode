@@ -58,6 +58,12 @@ namespace FreesqlGenCode.controls
             r.Height = IconWOrH;
             if (r.Contains(point))
             {
+                TabPage tabPage = this.TabPages[this.SelectedIndex];
+                if(this.SelectedIndex == 0 && tabPage.Tag == null)
+                {
+                    MessageBox.Show("默认页不允许关闭");
+                    return;
+                }
                 this.TabPages.RemoveAt(this.SelectedIndex);
             } 
         }

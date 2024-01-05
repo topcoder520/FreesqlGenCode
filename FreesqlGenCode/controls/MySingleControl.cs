@@ -44,52 +44,104 @@ namespace FreesqlGenCode.controls
             {
                 string htmlTemplate = File.ReadAllText(fileInfo.FullName);
                 this.genCodeRichTextBox1.Text = htmlTemplate;
+                mysingleTabControl1.SelectedTab = mysingleTabControl1.TabPages[0];
             }
         }
-
+        
         /// <summary>
-        /// 生成代码
+        /// tabcontrol 选择生成代码
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void genCodeButton1_Click(object sender, EventArgs e)
+        private void mysingleTabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(namespaceText.Text))
+            if(mysingleTabControl1.SelectedIndex == 1)
             {
-                MessageBox.Show("请输入命名空间");
-                return;
+                if (string.IsNullOrWhiteSpace(namespaceText.Text))
+                {
+                    mysingleTabControl1.SelectedTab = mysingleTabControl1.TabPages[0];
+                    MessageBox.Show("请输入命名空间");
+                    return;
+                }
+                if (listFileInfo.Count == 0)
+                {
+                    mysingleTabControl1.SelectedTab = mysingleTabControl1.TabPages[0];
+                    MessageBox.Show("请选择模板");
+                    return;
+                }
+                if (this.Parent is not TabPage tabPage)
+                {
+                    mysingleTabControl1.SelectedTab = mysingleTabControl1.TabPages[0];
+                    MessageBox.Show("系统错误!");
+                    return;
+                }
+                TabPageTag tag = tabPage.Tag as TabPageTag;
+                FsDatabase database = tag.fsDatabase;
+                TaskBuild task = ContextUtils.CreateTaskBuild(database.DBKey, tag.treeNodeTableNode.Parent.Text);
+                task.tableName = tag.treeNodeTableNode.Text;
+                task.FileName = selectTempleteComboBox1.SelectedText;
+                task.NamespaceName = namespaceText.Text;
+                task.FilterTableChar = filterTablenameText.Text;
+                task.FirstUpper = firstCharUpperCheckBox1.Checked;
+                task.AllLower = allLowerCheckBox1.Checked;
+                task.UnderLineTranser = underLineToCheckBox2.Checked;
+                task.Templates = new Template[] { new Template() {
+                    TemplatePath = selectTempleteComboBox1.SelectedItem as string,
+                    TemplateText = genCodeRichTextBox1.Text,
+                    IsChangeText = false,
+                } };
+
+
+                InitGencode(task);
             }
-            if (listFileInfo.Count == 0)
+        }
+
+        private async void InitGencode(TaskBuild task)
+        {
+            FormLoading frmLoading = null;
+            ThreadPool.QueueUserWorkItem(new WaitCallback(a =>
             {
-                MessageBox.Show("请选择模板");
-                return;
-            }
-            if(this.Parent is not TabPage tabPage)
+                if (this.modelRichTextBox1.InvokeRequired)
+                {
+                    this.modelRichTextBox1.Invoke((Action)delegate ()
+                    {
+                        frmLoading = new FormLoading("正在生成中，请稍后.....");
+                        frmLoading.ShowDialog();
+                    });
+                }
+                else
+                {
+                    frmLoading = new FormLoading("正在生成中，请稍后.....");
+                    frmLoading.ShowDialog();
+                }
+
+            }));
+            try
             {
-                MessageBox.Show("系统错误!");
-                return;
-            }
-            TabPageTag tag = tabPage.Tag as TabPageTag;
-            FsDatabase database = tag.fsDatabase;
-            TaskBuild task = ContextUtils.CreateTaskBuild(database.DBKey, tag.treeNodeTableNode.Parent.Text);
-            task.tableName = tag.treeNodeTableNode.Text;
-            task.FileName = selectTempleteComboBox1.SelectedText;
-            task.NamespaceName = namespaceText.Text;
-            task.FilterTableChar = filterTablenameText.Text;
-            task.FirstUpper = firstCharUpperCheckBox1.Checked;
-            task.AllLower = allLowerCheckBox1.Checked;
-            task.UnderLineTranser = underLineToCheckBox2.Checked;
-            task.Templates = new Template[] { new Template() {
-                TemplatePath = selectTempleteComboBox1.SelectedItem as string,
-                TemplateText = genCodeRichTextBox1.Text,
-                IsChangeText = false,
-            } };
-            FormShowGenCode formShowGenCode = new FormShowGenCode(listFileInfo, task);
-            DialogResult rs = formShowGenCode.ShowDialog();
-            if (rs == DialogResult.OK)
-            {
+                List<string> listCodeText = await new CodeGenerate().Setup(task, task.tableName);
+                if (listCodeText.Count > 0)
+                {
+                    if (this.modelRichTextBox1.InvokeRequired)
+                    {
+                        this.modelRichTextBox1.Invoke(new Action(() =>
+                        {
+                            this.modelRichTextBox1.Text = listCodeText[0];
+                        }));
+                    }
+                    else
+                    {
+                        this.modelRichTextBox1.Text = listCodeText[0];
+                    }
+                }
 
             }
+            catch (Exception e)
+            {
+                this.Invoke(() => {
+                    MessageBox.Show("代码生成失败!" + e.ToString());
+                });
+            }
+            this.Invoke((Action)delegate () { frmLoading?.Close(); });
         }
 
     }
