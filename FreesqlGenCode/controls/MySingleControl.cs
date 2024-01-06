@@ -98,42 +98,29 @@ namespace FreesqlGenCode.controls
 
         private async void InitGencode(TaskBuild task)
         {
-            FormLoading frmLoading = null;
-            ThreadPool.QueueUserWorkItem(new WaitCallback(a =>
-            {
-                if (this.modelRichTextBox1.InvokeRequired)
-                {
-                    this.modelRichTextBox1.Invoke((Action)delegate ()
-                    {
-                        frmLoading = new FormLoading("正在生成中，请稍后.....");
-                        frmLoading.ShowDialog();
-                    });
-                }
-                else
-                {
-                    frmLoading = new FormLoading("正在生成中，请稍后.....");
-                    frmLoading.ShowDialog();
-                }
-
-            }));
             try
             {
-                List<string> listCodeText = await new CodeGenerate().Setup(task, task.tableName);
-                if (listCodeText.Count > 0)
+                await this.modelRichTextBox1.ShowLoadingAsync("代码正生成中...", async(control) =>
                 {
-                    if (this.modelRichTextBox1.InvokeRequired)
+                    List<string> listCodeText = await new CodeGenerate().Setup(task, task.tableName);
+                    if (listCodeText.Count > 0)
                     {
-                        this.modelRichTextBox1.Invoke(new Action(() =>
+                        control.Invoke(() =>
                         {
-                            this.modelRichTextBox1.Text = listCodeText[0];
-                        }));
+                            if (modelRichTextBox1.InvokeRequired)
+                            {
+                                modelRichTextBox1.Invoke(new Action(() =>
+                                {
+                                    modelRichTextBox1.Text = listCodeText[0];
+                                }));
+                            }
+                            else
+                            {
+                                modelRichTextBox1.Text = listCodeText[0];
+                            }
+                        });
                     }
-                    else
-                    {
-                        this.modelRichTextBox1.Text = listCodeText[0];
-                    }
-                }
-
+                });
             }
             catch (Exception e)
             {
@@ -141,7 +128,6 @@ namespace FreesqlGenCode.controls
                     MessageBox.Show("代码生成失败!" + e.ToString());
                 });
             }
-            this.Invoke((Action)delegate () { frmLoading?.Close(); });
         }
 
     }

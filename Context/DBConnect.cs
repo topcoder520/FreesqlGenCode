@@ -1,4 +1,5 @@
 ﻿using FreeSql.DatabaseModel;
+using MySqlX.XDevAPI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,9 +62,27 @@ namespace Context
         /// </summary>
         /// <param name="database"></param>
         /// <returns></returns>
-        public List<string> GetTablesBy(string database) {
+        public List<string> GetTableNamesBy(string database) {
             List<DbTableInfo> lst =  freeSql.DbFirst.GetTablesByDatabase(database);
             List<string> tables = lst.Select(t => t.Name).ToList();
+            return tables;
+        }
+
+        public List<TableInfo> GetTablesBy(string database)
+        {
+            List<DbTableInfo> lst = freeSql.DbFirst.GetTablesByDatabase(database);
+            List<TableInfo> tables = new List<TableInfo>();
+            foreach (var item in lst)
+            {
+                tables.Add(new TableInfo() { 
+                    Name = item.Name,
+                    Comment = item.Comment,
+                    Schema = item.Schema,
+                    DbTableType = item.Type.ToString(),
+                    Columns = item.Columns.Count,
+                    Indexes = item.Indexes.Count
+                });
+            }
             return tables;
         }
 

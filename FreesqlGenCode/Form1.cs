@@ -5,6 +5,7 @@ using DataDefine;
 using FreesqlGenCode.controls;
 using Model;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace FreesqlGenCode
@@ -25,13 +26,13 @@ namespace FreesqlGenCode
         private void InitTreeView()
         {
             #region 初始化树形节点
-            treeView1.BeginUpdate();
             ImageList imageList = new ImageList();
             imageList.Images.Add(Properties.Resources.monitor);
             imageList.Images.Add(Properties.Resources.database);
-            imageList.Images.Add(Properties.Resources.application);
+            imageList.Images.Add(Properties.Resources.application3);
 
             List<FsDatabase> listData = bllFsDatabase.GetList(a => a.State == (int)EnumState.Normal);
+            treeView1.BeginUpdate();
             treeView1.Nodes.Clear();
             treeView1.ImageList = imageList;
             TreeNode[] treeNodes = new TreeNode[listData.Count];
@@ -45,7 +46,10 @@ namespace FreesqlGenCode
             treeView1.Nodes.Add(rootNode);
             treeView1.ExpandAll();
             treeView1.EndUpdate();
+
             #endregion
+
+            firstPageListView1.SmallImageList= imageList;
         }
 
         private void InitTabControl() {
@@ -81,10 +85,16 @@ namespace FreesqlGenCode
             TreeNode selectNode =  treeView1.SelectedNode;
             if(selectNode == null)
             {
-                MessageBox.Show("请选择连接节点");
+                MessageBox.Show("请选择数据库连接");
                 return;
             }
             FsDatabase fsDatabase = (FsDatabase)selectNode.Tag;
+            string fsText = fsDatabase.DatabaseName + $"({fsDatabase.DBType})";
+            if(fsText != selectNode.Text || selectNode.SelectedImageIndex > 0)
+            {//只删除数据库连接节点
+                MessageBox.Show("请选择数据库连接");
+                return;
+            }
             DialogResult rs =  MessageBox.Show("确认删除该连接吗?","提示", MessageBoxButtons.YesNo);
             if (rs == DialogResult.Yes)
             {
@@ -93,6 +103,11 @@ namespace FreesqlGenCode
                 {
                     InitTreeView();
                     ClearTabPages(fsDatabase.DBKey);
+
+                    //首页内容清除
+                    firstPageListView1.BeginUpdate();
+                    firstPageListView1.Items.Clear();
+                    firstPageListView1.EndUpdate();
                 }
                 else
                 {
@@ -258,14 +273,6 @@ namespace FreesqlGenCode
             {
                 return;
             }
-            FormLoading formLoading = null;
-            ThreadPool.QueueUserWorkItem(new WaitCallback(a => {
-                this.Invoke(() => {
-                    formLoading = new FormLoading("正在连接数据库...");
-                    formLoading.ShowDialog();
-                });
-            }));
-            treeView1.BeginUpdate();
             FsDatabase fsDatabase = (FsDatabase)node.Tag;
             EnumDatabase enumDatabase = EnumDatabase.Mysql;
             if (fsDatabase.DBType.ToLower() == EnumDatabase.Mysql.GetDescription().ToLower())
@@ -280,68 +287,68 @@ namespace FreesqlGenCode
             {
                 enumDatabase = EnumDatabase.SqlLite;
             }
-            node.Nodes.Clear();
-
             //建立连接
             //查询连接的数据库列表
             Context.DBConnect dBConnect = Context.ContextUtils.CreateConnectDB(enumDatabase, fsDatabase.ConnectString);
             if (dBConnect.TestConnect())
             {
-                List<string> dbNameList = dBConnect.GetDataBases();
-                foreach (var item in dbNameList)
-                {
-                    TreeNode childNode = new TreeNode(item, 1, 1);
-                    childNode.Tag = node.Tag;
-                    node.Nodes.Add(childNode);
-                }
-                treeView1.EndUpdate();
-                node.ExpandAll();
+                this.ShowLoadingAsync("正在加载数据...", (control) => {
+                    List<string> dbNameList = dBConnect.GetDataBases();
+                    control.Invoke(() => {
+                        treeView1.BeginUpdate();
+                        node.Nodes.Clear();
+                        foreach (var item in dbNameList)
+                        {
+                            TreeNode childNode = new TreeNode(item, 1, 1);
+                            childNode.Tag = node.Tag;
+                            node.Nodes.Add(childNode);
+                        }
+                        treeView1.EndUpdate();
+                        node.ExpandAll();
+                    });
+                    return Task.CompletedTask;
+                });
             }
             else
             {
-                treeView1.EndUpdate();
                 MessageBox.Show("数据库连接失败!" + dBConnect.GetException());
             }
-            this.Invoke(new Action(() => {
-                formLoading?.Close();
-            }));
+
         }
         /// <summary>
         /// 打开数据库
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void openDBToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void openDBToolStripMenuItem_Click(object sender, EventArgs e)
         {
             TreeNode node = treeView1.SelectedNode;
             if (node == null)
             {
                 return;
             }
-            FormLoading formLoading  = null;
-            ThreadPool.QueueUserWorkItem(new WaitCallback(a => {
-                this.Invoke((Action)(() =>
-                {
-                    formLoading = new FormLoading("");
-                    formLoading.ShowDialog();
-                }));
-            }));
-            treeView1.BeginUpdate();
-            node.Nodes.Clear();
-
             FsDatabase fsDatabase = (FsDatabase)node.Tag;
-            Context.DBConnect dBConnect = Context.ContextUtils.GetDBConnect(fsDatabase.DBKey);
-            //查询数据库下的所有表
-            List<string> lst = dBConnect.GetTablesBy(node.Text);
-            foreach (var item in lst)
+            await this.ShowLoadingAsync("正在加载数据...", (control) =>
             {
-                TreeNode tableNode = new TreeNode(item, 2, 2);
-                tableNode.Tag = node.Tag;
-                node.Nodes.Add(tableNode);
-            }
-            treeView1.EndUpdate();
-            node.ExpandAll();
-            this.Invoke((Action)delegate () { formLoading?.Close(); });
+                Context.DBConnect dBConnect = Context.ContextUtils.GetDBConnect(fsDatabase.DBKey);
+                //查询数据库下的所有表
+                List<string> lst = dBConnect.GetTableNamesBy(node.Text);
+                control.Invoke(() =>
+                {
+                    treeView1.BeginUpdate();
+                    node.Nodes.Clear();
+                    foreach (var item in lst)
+                    {
+                        TreeNode tableNode = new TreeNode(item, 2, 2);
+                        tableNode.Tag = node.Tag;
+                        node.Nodes.Add(tableNode);
+                    }
+                    treeView1.EndUpdate();
+                    node.ExpandAll();
+                });
+                return Task.CompletedTask;
+            });
+            treeView1_AfterSelect(sender,null);
         }
         /// <summary>
         /// 关闭数据库
@@ -360,6 +367,9 @@ namespace FreesqlGenCode
             treeView1.EndUpdate();
             FsDatabase fsDatabase = node.Tag as FsDatabase;
             ClearTabPages(fsDatabase.DBKey,node.Text);
+            firstPageListView1.BeginUpdate();
+            firstPageListView1.Items.Clear();
+            firstPageListView1.EndUpdate();
         }
 
         /// <summary>
@@ -441,7 +451,7 @@ namespace FreesqlGenCode
                 mySingleControl.Padding = new System.Windows.Forms.Padding(3);
                 mySingleControl.TabIndex = 0;
                 tabPage.Controls.Add(mySingleControl);
-                tabPage.Text = "单表 "+tag.TableName;
+                tabPage.Text = tag.TableName;
                 tabPage.ToolTipText = tabPage.Text;
                 foreach (List<string> colInfo in listCols)
                 {
@@ -455,7 +465,7 @@ namespace FreesqlGenCode
 
 
         /// <summary>
-        /// 多表代码生成
+        /// 数据库 多表代码生成
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -465,7 +475,251 @@ namespace FreesqlGenCode
             //tabControl1.SelectedTab = tabPage2;
         }
 
-       
+        /// <summary>
+        /// 点击数据库 显示首页数据
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private  async void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            TreeNode node = treeView1.SelectedNode;
+            if (node == null)
+            {
+                return;
+            }
+            if (node.Text == "服务器")
+            {
+                firstPageListView1.BeginUpdate();
+                firstPageListView1.Items.Clear();
+                firstPageListView1.EndUpdate();
+                return;
+            }
+            FsDatabase fsDatabase = (FsDatabase)node.Tag;
+            if (fsDatabase == null)
+            {
+                return;
+            }
+            Context.DBConnect dBConnect = Context.ContextUtils.GetDBConnect(fsDatabase.DBKey);
+            if (node.SelectedImageIndex == 0)
+            {//数据库连接节点 或者顶级节点
+             //清除listview
+                if (firstPageListView1.Items.Count == 0) return;
+                firstPageListView1.BeginUpdate();
+                firstPageListView1.Items.Clear();
+                firstPageListView1.EndUpdate();
+            }
+            else if (node.SelectedImageIndex == 1)
+            {//数据库节点
+                if (node.Nodes.Count == 0)
+                {
+                    //数据库没打开 清除listview
+                    if (firstPageListView1.Items.Count == 0) return;
+                    firstPageListView1.BeginUpdate();
+                    firstPageListView1.Items.Clear();
+                    firstPageListView1.EndUpdate();
+                }
+                else
+                {
+                    //数据库已经打开 显示listview
+                    if (firstPageListView1.Items.Count == 0)
+                    {
+                        this.ShowLoadingAsync("正在加载数据...", (control) =>
+                        {
+                            List<TableInfo> listTable = dBConnect.GetTablesBy(node.Text);
+                            control.Invoke(() =>
+                            {
+                                firstPageListView1.BeginUpdate();
+                                firstPageListView1.Tag = node; //储存数据库节点
+                                for (int i = 0; i < listTable.Count; i++)
+                                {
+                                    TableInfo tableInfo = listTable[i];
+                                    ListViewItem viewItem = new ListViewItem(tableInfo.Name, 2);
+                                    viewItem.SubItems.Add(tableInfo.Schema);
+                                    viewItem.SubItems.Add(tableInfo.DbTableType);
+                                    viewItem.SubItems.Add(tableInfo.Columns.ToString());
+                                    viewItem.SubItems.Add(tableInfo.Indexes.ToString());
+                                    viewItem.SubItems.Add(tableInfo.Comment);
+                                    firstPageListView1.Items.Add(viewItem);
+                                }
+                                firstPageListView1.EndUpdate();
+                            });
+                            return Task.CompletedTask;
+                        });
+                    }
+                    else
+                    {
+                        TreeNode viewNode = (TreeNode)firstPageListView1.Tag;
+                        if (viewNode == null || viewNode.Text != node.Text)
+                        {//数据库一样 不用再查数据
+                            this.ShowLoadingAsync("正在加载数据...", (control) =>
+                            {
+                                List<TableInfo> listTable = dBConnect.GetTablesBy(node.Text);
+                                control.Invoke(() =>
+                                {
+                                    firstPageListView1.BeginUpdate();
+                                    firstPageListView1.Items.Clear();
+                                    firstPageListView1.Tag = node; //储存数据库节点
+                                    for (int i = 0; i < listTable.Count; i++)
+                                    {
+                                        TableInfo tableInfo = listTable[i];
+                                        ListViewItem viewItem = new ListViewItem(tableInfo.Name, 2);
+                                        viewItem.SubItems.Add(tableInfo.Schema);
+                                        viewItem.SubItems.Add(tableInfo.DbTableType);
+                                        viewItem.SubItems.Add(tableInfo.Columns.ToString());
+                                        viewItem.SubItems.Add(tableInfo.Indexes.ToString());
+                                        viewItem.SubItems.Add(tableInfo.Comment);
+                                        firstPageListView1.Items.Add(viewItem);
+                                    }
+                                    firstPageListView1.EndUpdate();
+                                });
+                                return Task.CompletedTask;
+                            });
+                        }
+                    }
+                }
+
+            }
+            else if (node.SelectedImageIndex == 2)
+            {//表节点
+             //显示listview
+             //数据库已经打开 显示listview
+                if (firstPageListView1.Items.Count == 0)
+                {
+                    this.ShowLoadingAsync("正在加载数据...", (control) =>
+                    {
+                        List<TableInfo> listTable = dBConnect.GetTablesBy(node.Parent.Text);
+                        control.Invoke(() =>
+                        {
+                            firstPageListView1.BeginUpdate();
+                            firstPageListView1.Tag = node.Parent; //储存数据库节点
+                            for (int i = 0; i < listTable.Count; i++)
+                            {
+                                TableInfo tableInfo = listTable[i];
+                                ListViewItem viewItem = new ListViewItem(tableInfo.Name, 2);
+                                viewItem.SubItems.Add(tableInfo.Schema);
+                                viewItem.SubItems.Add(tableInfo.DbTableType);
+                                viewItem.SubItems.Add(tableInfo.Columns.ToString());
+                                viewItem.SubItems.Add(tableInfo.Indexes.ToString());
+                                viewItem.SubItems.Add(tableInfo.Comment);
+                                firstPageListView1.Items.Add(viewItem);
+                            }
+                            firstPageListView1.EndUpdate();
+                        });
+                        return Task.CompletedTask;
+                    });
+                }
+                else
+                {
+                    TreeNode viewNode = (TreeNode)firstPageListView1.Tag;
+                    if (viewNode == null || viewNode.Text != node.Parent.Text)
+                    {//数据库一样 不用再查数据
+                        this.ShowLoadingAsync("正在加载数据...", (control) =>
+                        {
+                            List<TableInfo> listTable = dBConnect.GetTablesBy(node.Parent.Text);
+                            control.Invoke(() => {
+                                firstPageListView1.BeginUpdate();
+                                firstPageListView1.Items.Clear();
+                                firstPageListView1.Tag = node.Parent; //储存数据库节点
+                                for (int i = 0; i < listTable.Count; i++)
+                                {
+                                    TableInfo tableInfo = listTable[i];
+                                    ListViewItem viewItem = new ListViewItem(tableInfo.Name, 2);
+                                    viewItem.SubItems.Add(tableInfo.Schema);
+                                    viewItem.SubItems.Add(tableInfo.DbTableType);
+                                    viewItem.SubItems.Add(tableInfo.Columns.ToString());
+                                    viewItem.SubItems.Add(tableInfo.Indexes.ToString());
+                                    viewItem.SubItems.Add(tableInfo.Comment);
+                                    firstPageListView1.Items.Add(viewItem);
+                                }
+                                firstPageListView1.EndUpdate();
+                            });
+                            return Task.CompletedTask;
+                        });
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 首页 ListView 右键
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void firstPageListView1_MouseClick(object sender, MouseEventArgs e)
+        {
+            if(e.Button== MouseButtons.Right)
+            {
+                ListViewItem item =  firstPageListView1.SelectedItems[0];
+                if (item != null)
+                {
+                    listViewContextMenuStrip1.Show(firstPageListView1,e.Location);
+                }
+            }
+        }
+        /// <summary>
+        /// listview 代码生成
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void listViewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ListViewItem item = firstPageListView1.SelectedItems[0];
+            if (item != null)
+            {
+                //获取数据库节点
+                TreeNode node = firstPageListView1.Tag as TreeNode;
+                if (node == null)
+                {
+                    return;
+                }
+
+                FormLoading frmLoading = null;
+                ThreadPool.QueueUserWorkItem(new WaitCallback(a =>
+                {
+                    this.Invoke((Action)delegate ()
+                    {
+                        frmLoading = new FormLoading("正在生成中，请稍后.....");
+                        frmLoading.ShowDialog();
+                    });
+                }));
+
+                FileInfo[] fileInfos = FileUtil.loadTemplates("");
+
+                FsDatabase fsDatabase = (FsDatabase)node.Tag;
+                DBConnect dBConnect = ContextUtils.GetDBConnect(fsDatabase.DBKey);
+                if (dBConnect.TestConnect())
+                {
+                    string selTable = node.Text + "." + item.Text;
+                    List<List<string>> listCols = dBConnect.GetColInfos(selTable);
+                    TabPageTag tag = new TabPageTag();
+                    tag.DBKey = fsDatabase.DBKey;
+                    tag.TableName = selTable;
+                    tag.fsDatabase = fsDatabase;
+                    //获取表节点信息
+                    int cntChild =  node.Nodes.Count;
+                    for(int i=0; i<cntChild; i++)
+                    {
+                        TreeNode childNode = node.Nodes[i];
+                        if(childNode.Text == item.Text)
+                        {
+                            tag.treeNodeTableNode = childNode;
+                            break;
+                        }
+                    }
+                    //开启page
+                    openSingleTableTabPage(listCols, tag, fileInfos);
+                }
+                else
+                {
+                    MessageBox.Show("数据库连接不可用!" + dBConnect.GetException());
+                    return;
+                }
+                this.Invoke((Action)delegate () {
+                    frmLoading?.Close();
+                });
+
+            }
+        }
     }
 
     class TabPageTag

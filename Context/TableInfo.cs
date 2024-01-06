@@ -10,6 +10,18 @@ namespace Context
     {
         public TableInfo() { }
 
+        public string Name { get; set; }
+
+        public string Comment { get; set; }
+
+        public string Schema { get; set; }
+
+        public string DbTableType { get; set; }
+
+        public int Columns { get; set; }
+
+        public int Indexes { get; set; }
+
         public List<ColInfo> colInfos { get; set; }
         
     }
