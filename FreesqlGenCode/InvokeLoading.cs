@@ -61,7 +61,7 @@ namespace FreesqlGenCode
                         }
                         break;
                     }
-                    await Task.Delay(TimeSpan.FromMilliseconds(300));
+                    await Task.Delay(TimeSpan.FromMilliseconds(200));
                 }
             }
         }

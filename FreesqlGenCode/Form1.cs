@@ -17,39 +17,78 @@ namespace FreesqlGenCode
         public Form1()
         {
             InitializeComponent();
-            InitTreeView();
+            InitTreeView("init");
             InitTabControl();
         }
+
         /// <summary>
         /// 初始化TreeNode
         /// </summary>
-        private void InitTreeView()
+        private void InitTreeView(string initFlag="init")
         {
             #region 初始化树形节点
-            ImageList imageList = new ImageList();
-            imageList.Images.Add(Properties.Resources.monitor);
-            imageList.Images.Add(Properties.Resources.database);
-            imageList.Images.Add(Properties.Resources.application3);
-
-            List<FsDatabase> listData = bllFsDatabase.GetList(a => a.State == (int)EnumState.Normal);
-            treeView1.BeginUpdate();
-            treeView1.Nodes.Clear();
-            treeView1.ImageList = imageList;
-            TreeNode[] treeNodes = new TreeNode[listData.Count];
-            for (int i = 0; i < listData.Count; i++)
+            if(initFlag == "init")
             {
-                FsDatabase fsDatabase = listData[i];
-                treeNodes[i] = new TreeNode(fsDatabase.DatabaseName + $"({fsDatabase.DBType})", 0, 0);
-                treeNodes[i].Tag = fsDatabase;
+                ImageList imageList = new ImageList();
+                imageList.Images.Add(Properties.Resources.monitor);
+                imageList.Images.Add(Properties.Resources.database);
+                imageList.Images.Add(Properties.Resources.application3);
+
+                List<FsDatabase> listData = bllFsDatabase.GetList(a => a.State == (int)EnumState.Normal);
+                treeView1.BeginUpdate();
+                treeView1.Nodes.Clear();
+                treeView1.ImageList = imageList;
+                TreeNode[] treeNodes = new TreeNode[listData.Count];
+                for (int i = 0; i < listData.Count; i++)
+                {
+                    FsDatabase fsDatabase = listData[i];
+                    treeNodes[i] = new TreeNode(fsDatabase.DatabaseName + $"({fsDatabase.DBType})", 0, 0);
+                    treeNodes[i].Tag = fsDatabase;
+                }
+                TreeNode rootNode = new TreeNode("服务器", 0, 0, treeNodes);
+                treeView1.Nodes.Add(rootNode);
+                treeView1.ExpandAll();
+                treeView1.EndUpdate();
+
+                firstPageListView1.SmallImageList = imageList;
             }
-            TreeNode rootNode = new TreeNode("服务器", 0, 0, treeNodes);
-            treeView1.Nodes.Add(rootNode);
-            treeView1.ExpandAll();
-            treeView1.EndUpdate();
+            else
+            {
+                List<FsDatabase> listData = bllFsDatabase.GetList(a => a.State == (int)EnumState.Normal);
+                List<TreeNode> newData = new List<TreeNode>();
+                TreeNode root = treeView1.Nodes[0];
+                foreach (var item in listData)
+                {
+                    bool exist = false;
+                    for (int i = 0; i < root.Nodes.Count; i++)
+                    {
+                        FsDatabase fsDB = root.Nodes[i].Tag as FsDatabase;
+                        if(item.DBKey == fsDB.DBKey)
+                        {
+                            exist = true;
+                            break;
+                        }
+                    }
+                    if (!exist)
+                    {
+                        TreeNode treeNode = new TreeNode(item.DatabaseName + $"({item.DBType})", 0, 0);
+                        treeNode.Tag = item;
+                        newData.Add(treeNode);
+                    }
+                }
+                if (newData.Count > 0)
+                {
+                    root.Nodes.AddRange(newData.ToArray());
+                }
+                for (int i = 0; i < root.Nodes.Count; i++)
+                {
+                    TreeNode conctNode = root.Nodes[i];
+                    conctNode.Collapse();
+                }
+            }
 
             #endregion
 
-            firstPageListView1.SmallImageList= imageList;
         }
 
         private void InitTabControl() {
@@ -70,7 +109,7 @@ namespace FreesqlGenCode
             if (rs == DialogResult.OK) { 
                 
             }
-            InitTreeView();
+            InitTreeView("NotInit");
             ClearTabPages("");
         }
         /// <summary>
@@ -101,7 +140,9 @@ namespace FreesqlGenCode
                 int cnt = bllFsDatabase.Delete(a => a.DatabaseName == selectNode.Text);
                 if (cnt > 0)
                 {
-                    InitTreeView();
+                    treeView1.Nodes.Remove(selectNode);
+                    Context.ContextUtils.DelDBConnect(fsDatabase.DBKey);
+                    InitTreeView("NotInit");
                     ClearTabPages(fsDatabase.DBKey);
 
                     //首页内容清除
@@ -138,10 +179,36 @@ namespace FreesqlGenCode
                 else if(node.SelectedImageIndex == 0)
                 {
                     //连接节点
+                    if(node.Nodes.Count > 0)
+                    {
+                        conctConnectToolStripMenuItem.Visible = false;
+                        conctCloseToolStripMenuItem.Visible = true;
+                        conctDelToolStripMenuItem.Visible = false;
+                    }
+                    else
+                    {
+                        conctConnectToolStripMenuItem.Visible = true;
+                        conctCloseToolStripMenuItem.Visible = false;
+                        conctDelToolStripMenuItem.Visible = true;
+                    }
                     this.conctContextMenuStrip1.Show(treeView1,e.Location);
                 }else if(node.SelectedImageIndex == 1)
                 {
                     //数据库
+                    if (node.Nodes.Count > 0)
+                    {
+                        openDBToolStripMenuItem.Visible = false;
+                        refreshDBToolStripMenuItem.Visible = true;
+                        dbCloseToolStripMenuItem.Visible = true;
+                        mulTableToolStripMenuItem.Visible = true;
+                    }
+                    else
+                    {
+                        openDBToolStripMenuItem.Visible = true;
+                        refreshDBToolStripMenuItem.Visible = false;
+                        dbCloseToolStripMenuItem.Visible = false;
+                        mulTableToolStripMenuItem.Visible = true;
+                    }
                     this.dbContextMenuStrip1.Show(treeView1, e.Location);
                 }
                 else if (node.SelectedImageIndex == 2)
@@ -195,9 +262,9 @@ namespace FreesqlGenCode
         /// <param name="e"></param>
         private void rootTreeNodeReToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            InitTreeView();
+            InitTreeView("NotInit");
             //暂时
-            ClearTabPages("");
+            //ClearTabPages("");
         }
         /// <summary>
         /// TreeNode 关闭连接

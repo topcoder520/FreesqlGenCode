@@ -31,27 +31,27 @@ namespace FreesqlGenCode
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("节点8");
-            System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("节点7", new System.Windows.Forms.TreeNode[] {
-            treeNode23});
-            System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("节点1", new System.Windows.Forms.TreeNode[] {
-            treeNode24});
-            System.Windows.Forms.TreeNode treeNode26 = new System.Windows.Forms.TreeNode("节点9");
-            System.Windows.Forms.TreeNode treeNode27 = new System.Windows.Forms.TreeNode("节点2", new System.Windows.Forms.TreeNode[] {
-            treeNode26});
-            System.Windows.Forms.TreeNode treeNode28 = new System.Windows.Forms.TreeNode("节点10");
-            System.Windows.Forms.TreeNode treeNode29 = new System.Windows.Forms.TreeNode("节点3", new System.Windows.Forms.TreeNode[] {
-            treeNode28});
-            System.Windows.Forms.TreeNode treeNode30 = new System.Windows.Forms.TreeNode("节点4");
-            System.Windows.Forms.TreeNode treeNode31 = new System.Windows.Forms.TreeNode("节点5");
-            System.Windows.Forms.TreeNode treeNode32 = new System.Windows.Forms.TreeNode("节点6");
-            System.Windows.Forms.TreeNode treeNode33 = new System.Windows.Forms.TreeNode("服务器", new System.Windows.Forms.TreeNode[] {
-            treeNode25,
-            treeNode27,
-            treeNode29,
-            treeNode30,
-            treeNode31,
-            treeNode32});
+            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("节点8");
+            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("节点7", new System.Windows.Forms.TreeNode[] {
+            treeNode12});
+            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("节点1", new System.Windows.Forms.TreeNode[] {
+            treeNode13});
+            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("节点9");
+            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("节点2", new System.Windows.Forms.TreeNode[] {
+            treeNode15});
+            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("节点10");
+            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("节点3", new System.Windows.Forms.TreeNode[] {
+            treeNode17});
+            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("节点4");
+            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("节点5");
+            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("节点6");
+            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("服务器", new System.Windows.Forms.TreeNode[] {
+            treeNode14,
+            treeNode16,
+            treeNode18,
+            treeNode19,
+            treeNode20,
+            treeNode21});
             this.fsPictureBox1 = new FreesqlGenCode.controls.FsAddDbPictureBox();
             this.fsDelDbPictureBox1 = new FreesqlGenCode.controls.FsDelDbPictureBox();
             this.topFlowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
@@ -79,8 +79,8 @@ namespace FreesqlGenCode
             this.dbContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openDBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshDBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dbCloseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mulTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dbCloseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.modelGenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.listViewContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -166,30 +166,30 @@ namespace FreesqlGenCode
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            treeNode23.Name = "节点8";
-            treeNode23.Text = "节点8";
-            treeNode24.Name = "节点7";
-            treeNode24.Text = "节点7";
-            treeNode25.Name = "节点1";
-            treeNode25.Text = "节点1";
-            treeNode26.Name = "节点9";
-            treeNode26.Text = "节点9";
-            treeNode27.Name = "节点2";
-            treeNode27.Text = "节点2";
-            treeNode28.Name = "节点10";
-            treeNode28.Text = "节点10";
-            treeNode29.Name = "节点3";
-            treeNode29.Text = "节点3";
-            treeNode30.Name = "节点4";
-            treeNode30.Text = "节点4";
-            treeNode31.Name = "节点5";
-            treeNode31.Text = "节点5";
-            treeNode32.Name = "节点6";
-            treeNode32.Text = "节点6";
-            treeNode33.Name = "节点0";
-            treeNode33.Text = "服务器";
+            treeNode12.Name = "节点8";
+            treeNode12.Text = "节点8";
+            treeNode13.Name = "节点7";
+            treeNode13.Text = "节点7";
+            treeNode14.Name = "节点1";
+            treeNode14.Text = "节点1";
+            treeNode15.Name = "节点9";
+            treeNode15.Text = "节点9";
+            treeNode16.Name = "节点2";
+            treeNode16.Text = "节点2";
+            treeNode17.Name = "节点10";
+            treeNode17.Text = "节点10";
+            treeNode18.Name = "节点3";
+            treeNode18.Text = "节点3";
+            treeNode19.Name = "节点4";
+            treeNode19.Text = "节点4";
+            treeNode20.Name = "节点5";
+            treeNode20.Text = "节点5";
+            treeNode21.Name = "节点6";
+            treeNode21.Text = "节点6";
+            treeNode22.Name = "节点0";
+            treeNode22.Text = "服务器";
             this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode33});
+            treeNode22});
             this.treeView1.Size = new System.Drawing.Size(400, 720);
             this.treeView1.TabIndex = 0;
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
@@ -302,20 +302,20 @@ namespace FreesqlGenCode
             this.rootTreeNodeReToolStripMenuItem,
             this.rootTreeNodeAddToolStripMenuItem});
             this.rootTreeNodeContextMenuStrip1.Name = "rootTreeNodeContextMenuStrip1";
-            this.rootTreeNodeContextMenuStrip1.Size = new System.Drawing.Size(117, 64);
+            this.rootTreeNodeContextMenuStrip1.Size = new System.Drawing.Size(153, 64);
             // 
             // rootTreeNodeReToolStripMenuItem
             // 
             this.rootTreeNodeReToolStripMenuItem.Name = "rootTreeNodeReToolStripMenuItem";
-            this.rootTreeNodeReToolStripMenuItem.Size = new System.Drawing.Size(116, 30);
+            this.rootTreeNodeReToolStripMenuItem.Size = new System.Drawing.Size(152, 30);
             this.rootTreeNodeReToolStripMenuItem.Text = "刷新";
             this.rootTreeNodeReToolStripMenuItem.Click += new System.EventHandler(this.rootTreeNodeReToolStripMenuItem_Click);
             // 
             // rootTreeNodeAddToolStripMenuItem
             // 
             this.rootTreeNodeAddToolStripMenuItem.Name = "rootTreeNodeAddToolStripMenuItem";
-            this.rootTreeNodeAddToolStripMenuItem.Size = new System.Drawing.Size(116, 30);
-            this.rootTreeNodeAddToolStripMenuItem.Text = "添加";
+            this.rootTreeNodeAddToolStripMenuItem.Size = new System.Drawing.Size(152, 30);
+            this.rootTreeNodeAddToolStripMenuItem.Text = "添加连接";
             this.rootTreeNodeAddToolStripMenuItem.Click += new System.EventHandler(this.fsPictureBox1_FsClick);
             // 
             // conctContextMenuStrip1
@@ -326,27 +326,27 @@ namespace FreesqlGenCode
             this.conctCloseToolStripMenuItem,
             this.conctDelToolStripMenuItem});
             this.conctContextMenuStrip1.Name = "conctContextMenuStrip1";
-            this.conctContextMenuStrip1.Size = new System.Drawing.Size(117, 94);
+            this.conctContextMenuStrip1.Size = new System.Drawing.Size(153, 94);
             // 
             // conctConnectToolStripMenuItem
             // 
             this.conctConnectToolStripMenuItem.Name = "conctConnectToolStripMenuItem";
-            this.conctConnectToolStripMenuItem.Size = new System.Drawing.Size(116, 30);
-            this.conctConnectToolStripMenuItem.Text = "连接";
+            this.conctConnectToolStripMenuItem.Size = new System.Drawing.Size(152, 30);
+            this.conctConnectToolStripMenuItem.Text = "打开连接";
             this.conctConnectToolStripMenuItem.Click += new System.EventHandler(this.conctConnectToolStripMenuItem_Click);
             // 
             // conctCloseToolStripMenuItem
             // 
             this.conctCloseToolStripMenuItem.Name = "conctCloseToolStripMenuItem";
-            this.conctCloseToolStripMenuItem.Size = new System.Drawing.Size(116, 30);
-            this.conctCloseToolStripMenuItem.Text = "关闭";
+            this.conctCloseToolStripMenuItem.Size = new System.Drawing.Size(152, 30);
+            this.conctCloseToolStripMenuItem.Text = "关闭连接";
             this.conctCloseToolStripMenuItem.Click += new System.EventHandler(this.conctCloseToolStripMenuItem_Click);
             // 
             // conctDelToolStripMenuItem
             // 
             this.conctDelToolStripMenuItem.Name = "conctDelToolStripMenuItem";
-            this.conctDelToolStripMenuItem.Size = new System.Drawing.Size(116, 30);
-            this.conctDelToolStripMenuItem.Text = "删除";
+            this.conctDelToolStripMenuItem.Size = new System.Drawing.Size(152, 30);
+            this.conctDelToolStripMenuItem.Text = "删除连接";
             this.conctDelToolStripMenuItem.Click += new System.EventHandler(this.fsDelDbPictureBox1_FsClick);
             // 
             // dbContextMenuStrip1
@@ -355,8 +355,8 @@ namespace FreesqlGenCode
             this.dbContextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openDBToolStripMenuItem,
             this.refreshDBToolStripMenuItem,
-            this.dbCloseToolStripMenuItem,
-            this.mulTableToolStripMenuItem});
+            this.mulTableToolStripMenuItem,
+            this.dbCloseToolStripMenuItem});
             this.dbContextMenuStrip1.Name = "dbContextMenuStrip1";
             this.dbContextMenuStrip1.Size = new System.Drawing.Size(171, 124);
             // 
@@ -374,19 +374,19 @@ namespace FreesqlGenCode
             this.refreshDBToolStripMenuItem.Text = "刷新";
             this.refreshDBToolStripMenuItem.Click += new System.EventHandler(this.openDBToolStripMenuItem_Click);
             // 
-            // dbCloseToolStripMenuItem
-            // 
-            this.dbCloseToolStripMenuItem.Name = "dbCloseToolStripMenuItem";
-            this.dbCloseToolStripMenuItem.Size = new System.Drawing.Size(170, 30);
-            this.dbCloseToolStripMenuItem.Text = "关闭数据库";
-            this.dbCloseToolStripMenuItem.Click += new System.EventHandler(this.dbCloseToolStripMenuItem_Click);
-            // 
             // mulTableToolStripMenuItem
             // 
             this.mulTableToolStripMenuItem.Name = "mulTableToolStripMenuItem";
             this.mulTableToolStripMenuItem.Size = new System.Drawing.Size(170, 30);
             this.mulTableToolStripMenuItem.Text = "代码生成";
             this.mulTableToolStripMenuItem.Click += new System.EventHandler(this.mulTableGenToolStripMenuItem_Click);
+            // 
+            // dbCloseToolStripMenuItem
+            // 
+            this.dbCloseToolStripMenuItem.Name = "dbCloseToolStripMenuItem";
+            this.dbCloseToolStripMenuItem.Size = new System.Drawing.Size(170, 30);
+            this.dbCloseToolStripMenuItem.Text = "关闭数据库";
+            this.dbCloseToolStripMenuItem.Click += new System.EventHandler(this.dbCloseToolStripMenuItem_Click);
             // 
             // tableContextMenuStrip1
             // 
@@ -409,12 +409,12 @@ namespace FreesqlGenCode
             this.listViewContextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.listViewToolStripMenuItem});
             this.listViewContextMenuStrip1.Name = "listViewContextMenuStrip1";
-            this.listViewContextMenuStrip1.Size = new System.Drawing.Size(241, 67);
+            this.listViewContextMenuStrip1.Size = new System.Drawing.Size(153, 34);
             // 
             // listViewToolStripMenuItem
             // 
             this.listViewToolStripMenuItem.Name = "listViewToolStripMenuItem";
-            this.listViewToolStripMenuItem.Size = new System.Drawing.Size(240, 30);
+            this.listViewToolStripMenuItem.Size = new System.Drawing.Size(152, 30);
             this.listViewToolStripMenuItem.Text = "代码生成";
             this.listViewToolStripMenuItem.Click += new System.EventHandler(this.listViewToolStripMenuItem_Click);
             // 
