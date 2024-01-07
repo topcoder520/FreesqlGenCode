@@ -181,9 +181,9 @@ namespace FreesqlGenCode.controls
             this.underLineToCheckBox2.AutoSize = true;
             this.underLineToCheckBox2.Location = new System.Drawing.Point(371, 91);
             this.underLineToCheckBox2.Name = "underLineToCheckBox2";
-            this.underLineToCheckBox2.Size = new System.Drawing.Size(108, 28);
+            this.underLineToCheckBox2.Size = new System.Drawing.Size(144, 28);
             this.underLineToCheckBox2.TabIndex = 8;
-            this.underLineToCheckBox2.Text = "下划线转";
+            this.underLineToCheckBox2.Text = "下划线转驼峰";
             this.underLineToCheckBox2.UseVisualStyleBackColor = true;
             // 
             // allLowerCheckBox1

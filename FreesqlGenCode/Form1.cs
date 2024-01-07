@@ -452,42 +452,33 @@ namespace FreesqlGenCode
             {
                 return;
             }
-
-            FormLoading frmLoading = null;
-            ThreadPool.QueueUserWorkItem(new WaitCallback(a =>
-            {
-                this.Invoke((Action)delegate ()
-                {
-                    frmLoading = new FormLoading("正在生成中，请稍后.....");
-                    frmLoading.ShowDialog();
-                });
-            }));
-
-            FileInfo[] fileInfos = FileUtil.loadTemplates("");
-
             FsDatabase fsDatabase = (FsDatabase)node.Tag;
             DBConnect dBConnect = ContextUtils.GetDBConnect(fsDatabase.DBKey);
             if (dBConnect.TestConnect())
             {
-                TreeNode parentNode = node.Parent;
-                string selTable = parentNode.Text + "." + node.Text;
-                List<List<string>> listCols = dBConnect.GetColInfos(selTable);
-                TabPageTag tag = new TabPageTag();
-                tag.DBKey = fsDatabase.DBKey;
-                tag.TableName = selTable;
-                tag.fsDatabase = fsDatabase;
-                tag.treeNodeTableNode = node;
-                openSingleTableTabPage(listCols,tag,fileInfos);
+                this.ShowLoadingAsync("正在加载数据...", (control)=>
+                {
+                    FileInfo[] fileInfos = FileUtil.loadTemplates("");
+                    TreeNode parentNode = node.Parent;
+                    string selTable = parentNode.Text + "." + node.Text;
+                    List<List<string>> listCols = dBConnect.GetColInfos(selTable);
+                    control.Invoke(() =>
+                    {
+                        TabPageTag tag = new TabPageTag();
+                        tag.DBKey = fsDatabase.DBKey;
+                        tag.TableName = selTable;
+                        tag.fsDatabase = fsDatabase;
+                        tag.treeNodeTableNode = node;
+                        openSingleTableTabPage(listCols, tag, fileInfos);
+                    });
+                    return Task.CompletedTask;
+                });
             }
             else
             {
                 MessageBox.Show("数据库连接不可用!"+dBConnect.GetException());
                 return;
             }
-            this.Invoke((Action)delegate () { 
-                frmLoading?.Close(); 
-            });
-            treeView1.SelectedNode = node;
         }
 
         private void openSingleTableTabPage(List<List<string>> listCols, TabPageTag tag, FileInfo[] fileInfos)
@@ -538,8 +529,16 @@ namespace FreesqlGenCode
         /// <param name="e"></param>
         private void mulTableGenToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //tabPage2.Select();
-            //tabControl1.SelectedTab = tabPage2;
+            TreeNode node = treeView1.SelectedNode;
+            if (node == null)
+            {
+                return;
+            }
+            FormBatchGen formBatchGen = new FormBatchGen();
+            formBatchGen.conctLabel2.Text = node.Parent.Text;
+            formBatchGen.dbNameLabel3.Text = node.Text;
+            formBatchGen.Tag = node;
+            formBatchGen.ShowDialog();
         }
 
         /// <summary>
@@ -739,52 +738,44 @@ namespace FreesqlGenCode
                 {
                     return;
                 }
+                
 
-                FormLoading frmLoading = null;
-                ThreadPool.QueueUserWorkItem(new WaitCallback(a =>
-                {
-                    this.Invoke((Action)delegate ()
-                    {
-                        frmLoading = new FormLoading("正在生成中，请稍后.....");
-                        frmLoading.ShowDialog();
-                    });
-                }));
-
-                FileInfo[] fileInfos = FileUtil.loadTemplates("");
 
                 FsDatabase fsDatabase = (FsDatabase)node.Tag;
                 DBConnect dBConnect = ContextUtils.GetDBConnect(fsDatabase.DBKey);
                 if (dBConnect.TestConnect())
                 {
-                    string selTable = node.Text + "." + item.Text;
-                    List<List<string>> listCols = dBConnect.GetColInfos(selTable);
-                    TabPageTag tag = new TabPageTag();
-                    tag.DBKey = fsDatabase.DBKey;
-                    tag.TableName = selTable;
-                    tag.fsDatabase = fsDatabase;
-                    //获取表节点信息
-                    int cntChild =  node.Nodes.Count;
-                    for(int i=0; i<cntChild; i++)
-                    {
-                        TreeNode childNode = node.Nodes[i];
-                        if(childNode.Text == item.Text)
-                        {
-                            tag.treeNodeTableNode = childNode;
-                            break;
-                        }
-                    }
-                    //开启page
-                    openSingleTableTabPage(listCols, tag, fileInfos);
+                    this.ShowLoadingAsync("正在加载数据...", (control) => {
+                        FileInfo[] fileInfos = FileUtil.loadTemplates("");
+                        string selTable = node.Text + "." + item.Text;
+                        List<List<string>> listCols = dBConnect.GetColInfos(selTable);
+                        control.Invoke(() => {
+                            TabPageTag tag = new TabPageTag();
+                            tag.DBKey = fsDatabase.DBKey;
+                            tag.TableName = selTable;
+                            tag.fsDatabase = fsDatabase;
+                            //获取表节点信息
+                            int cntChild = node.Nodes.Count;
+                            for (int i = 0; i < cntChild; i++)
+                            {
+                                TreeNode childNode = node.Nodes[i];
+                                if (childNode.Text == item.Text)
+                                {
+                                    tag.treeNodeTableNode = childNode;
+                                    break;
+                                }
+                            }
+                            //开启page
+                            openSingleTableTabPage(listCols, tag, fileInfos);
+                        });
+                        return Task.CompletedTask;
+                    });
                 }
                 else
                 {
                     MessageBox.Show("数据库连接不可用!" + dBConnect.GetException());
                     return;
                 }
-                this.Invoke((Action)delegate () {
-                    frmLoading?.Close();
-                });
-
             }
         }
     }
