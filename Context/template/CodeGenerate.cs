@@ -1,4 +1,5 @@
 ﻿using FreeSql.DatabaseModel;
+using Org.BouncyCastle.Asn1;
 using RazorEngine;
 using RazorEngine.Configuration;
 using RazorEngine.Templating;
@@ -34,7 +35,7 @@ namespace Context
                         var razorId = Guid.NewGuid().ToString("N");
                         if (string.IsNullOrWhiteSpace(template.TemplateText))
                         {
-                            var html = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "", template.TemplatePath));
+                            var html = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "", template.TemplateName));
                             Engine.Razor.Compile(html, razorId);
                         }
                         else
@@ -74,7 +75,7 @@ namespace Context
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<string> Setup(TaskBuild taskBuild, List<DbTableInfo> outputTables)
+        public async Task<string> Setup(TaskBuild taskBuild)
         {
             try
             {
@@ -86,16 +87,20 @@ namespace Context
 
                     string path = string.Empty;
 
-
+                    int flag = taskBuild.Templates.Count;
                     foreach (var template in taskBuild.Templates)
                     {
-                        path = $"{taskBuild.GeneratePath}\\{taskBuild.DbName}\\{template.TemplatePath.Replace(".cshtml", "").Trim()}";
+                        path = $"{taskBuild.GeneratePath}";
+                        if (flag > 1)
+                        {
+                            path = Path.Combine(path,template.TemplateName.Replace(".cshtml", ""));
+                        }
                         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 
                         var razorId = Guid.NewGuid().ToString("N");
                         if (string.IsNullOrWhiteSpace(template.TemplateText))
                         {
-                            var html = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "Templates", template.TemplatePath));
+                            var html = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "", template.TemplateName));
                             Engine.Razor.Compile(html, razorId);
                         }
                         else
@@ -103,7 +108,7 @@ namespace Context
                             Engine.Razor.Compile(template.TemplateText, razorId);
                         }
                         //开始生成操作
-                        foreach (var table in outputTables)
+                        foreach (var table in taskBuild.tableInfos)
                         {
                             var sw = new StringWriter();
                             var model = new EntityTemplate(taskBuild, table);
@@ -118,20 +123,45 @@ namespace Context
                             plus.AppendLine("//------------------------------------------------------------------------------");
                             plus.Append(sw.ToString());
                             plus.AppendLine();
-                            var outPath = $"{path}\\{taskBuild.FileName.Replace("{name}", model.GetCsName(table.Name))}";
+                            var outPath = $"{taskBuild.FileName.Replace("{name}", model.GetCsName(table.Name))}";
                             if (!string.IsNullOrEmpty(taskBuild.FilterTableChar))
                                 outPath = outPath.Replace(taskBuild.FilterTableChar, "").Trim();
+                            outPath = Path.Combine(path, outPath);
+                            if (File.Exists(outPath))
+                            {
+                                if (taskBuild.skipSameNameFile)
+                                {
+                                    continue;
+                                }
+                                if (!taskBuild.CoverExistFile)
+                                {
+                                    FileInfo fileInfo = new FileInfo(outPath);
+                                    string str = "";
+                                    string destPathFormat = outPath + "_" + fileInfo.CreationTime.ToString("yyyy-MM-dd") + "{0}" + ".txt";
+                                    for (int i = 0; i < 100; i++)
+                                    {
+                                        string destPath = string.Format(destPathFormat, str);
+                                        if (!File.Exists(destPath))
+                                        {
+                                            break;
+                                        }
+                                        str = $"({i + 1})";
+                                    }
+                                    destPathFormat = string.Format(destPathFormat, str);
+                                    fileInfo.MoveTo(destPathFormat);
+                                }
+                            }
                             File.WriteAllText(outPath, plus.ToString());
                         }
                     }
                     return path;
                 });
-                Process.Start(paths);
-                return "生成成功";
+                //Process.Start(paths); //打开文件夹
+                return "Success";
             }
             catch (Exception ex)
             {
-                return $"生成时发生异常,请检查模版代码: {ex.Message}.";
+                throw ex;
             }
         }
 

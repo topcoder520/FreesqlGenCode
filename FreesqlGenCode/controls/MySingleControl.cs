@@ -86,7 +86,7 @@ namespace FreesqlGenCode.controls
                 task.AllLower = allLowerCheckBox1.Checked;
                 task.UnderLineTranser = underLineToCheckBox2.Checked;
                 task.Templates = new Template[] { new Template() {
-                    TemplatePath = selectTempleteComboBox1.SelectedItem as string,
+                    TemplateName = selectTempleteComboBox1.SelectedItem as string,
                     TemplateText = genCodeRichTextBox1.Text,
                     IsChangeText = false,
                 } };

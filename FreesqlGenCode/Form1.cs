@@ -373,7 +373,7 @@ namespace FreesqlGenCode
                         treeView1.EndUpdate();
                         node.ExpandAll();
                     });
-                    return Task.CompletedTask;
+                    return Task.FromResult(1);
                 });
             }
             else
@@ -413,7 +413,7 @@ namespace FreesqlGenCode
                     treeView1.EndUpdate();
                     node.ExpandAll();
                 });
-                return Task.CompletedTask;
+                return Task.FromResult(1);
             });
             treeView1_AfterSelect(sender,null);
         }
@@ -471,7 +471,7 @@ namespace FreesqlGenCode
                         tag.treeNodeTableNode = node;
                         openSingleTableTabPage(listCols, tag, fileInfos);
                     });
-                    return Task.CompletedTask;
+                    return Task.FromResult(1);
                 });
             }
             else
@@ -609,7 +609,7 @@ namespace FreesqlGenCode
                                 }
                                 firstPageListView1.EndUpdate();
                             });
-                            return Task.CompletedTask;
+                            return Task.FromResult(1);
                         });
                     }
                     else
@@ -638,7 +638,7 @@ namespace FreesqlGenCode
                                     }
                                     firstPageListView1.EndUpdate();
                                 });
-                                return Task.CompletedTask;
+                                return Task.FromResult(1);
                             });
                         }
                     }
@@ -671,7 +671,7 @@ namespace FreesqlGenCode
                             }
                             firstPageListView1.EndUpdate();
                         });
-                        return Task.CompletedTask;
+                        return Task.FromResult(1);
                     });
                 }
                 else
@@ -699,7 +699,7 @@ namespace FreesqlGenCode
                                 }
                                 firstPageListView1.EndUpdate();
                             });
-                            return Task.CompletedTask;
+                            return Task.FromResult(1);
                         });
                     }
                 }
@@ -768,7 +768,7 @@ namespace FreesqlGenCode
                             //¿ªÆôpage
                             openSingleTableTabPage(listCols, tag, fileInfos);
                         });
-                        return Task.CompletedTask;
+                        return Task.FromResult(1);
                     });
                 }
                 else

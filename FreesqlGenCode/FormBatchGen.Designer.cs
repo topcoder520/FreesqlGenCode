@@ -30,6 +30,8 @@
         {
             this.panel1 = new System.Windows.Forms.Panel();
             this.buttonGroupBox1 = new System.Windows.Forms.GroupBox();
+            this.skipSameNameFileCheckBox1 = new System.Windows.Forms.CheckBox();
+            this.coverFileCheckBox1 = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.templateFlowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.fsRowCheckBox2 = new FreesqlGenCode.controls.FsRowCheckBox();
@@ -61,7 +63,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.conctLabel2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.panel1.SuspendLayout();
             this.buttonGroupBox1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -82,11 +84,13 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1014, 765);
+            this.panel1.Size = new System.Drawing.Size(1014, 813);
             this.panel1.TabIndex = 0;
             // 
             // buttonGroupBox1
             // 
+            this.buttonGroupBox1.Controls.Add(this.skipSameNameFileCheckBox1);
+            this.buttonGroupBox1.Controls.Add(this.coverFileCheckBox1);
             this.buttonGroupBox1.Controls.Add(this.groupBox1);
             this.buttonGroupBox1.Controls.Add(this.exportButton2);
             this.buttonGroupBox1.Controls.Add(this.selectFileButton1);
@@ -102,19 +106,41 @@
             this.buttonGroupBox1.Controls.Add(this.namespaceTextBox1);
             this.buttonGroupBox1.Controls.Add(this.label3);
             this.buttonGroupBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.buttonGroupBox1.Location = new System.Drawing.Point(0, 474);
+            this.buttonGroupBox1.Location = new System.Drawing.Point(0, 463);
             this.buttonGroupBox1.Name = "buttonGroupBox1";
-            this.buttonGroupBox1.Size = new System.Drawing.Size(1012, 289);
+            this.buttonGroupBox1.Size = new System.Drawing.Size(1012, 348);
             this.buttonGroupBox1.TabIndex = 2;
             this.buttonGroupBox1.TabStop = false;
             this.buttonGroupBox1.Text = "参数设置";
             // 
+            // skipSameNameFileCheckBox1
+            // 
+            this.skipSameNameFileCheckBox1.AutoSize = true;
+            this.skipSameNameFileCheckBox1.Checked = true;
+            this.skipSameNameFileCheckBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.skipSameNameFileCheckBox1.Location = new System.Drawing.Point(208, 186);
+            this.skipSameNameFileCheckBox1.Name = "skipSameNameFileCheckBox1";
+            this.skipSameNameFileCheckBox1.Size = new System.Drawing.Size(144, 28);
+            this.skipSameNameFileCheckBox1.TabIndex = 15;
+            this.skipSameNameFileCheckBox1.Text = "跳过同名文件";
+            this.skipSameNameFileCheckBox1.UseVisualStyleBackColor = true;
+            // 
+            // coverFileCheckBox1
+            // 
+            this.coverFileCheckBox1.AutoSize = true;
+            this.coverFileCheckBox1.Location = new System.Drawing.Point(43, 186);
+            this.coverFileCheckBox1.Name = "coverFileCheckBox1";
+            this.coverFileCheckBox1.Size = new System.Drawing.Size(144, 28);
+            this.coverFileCheckBox1.TabIndex = 14;
+            this.coverFileCheckBox1.Text = "覆盖重名文件";
+            this.coverFileCheckBox1.UseVisualStyleBackColor = true;
+            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.templateFlowLayoutPanel1);
-            this.groupBox1.Location = new System.Drawing.Point(525, 28);
+            this.groupBox1.Location = new System.Drawing.Point(525, 29);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(476, 189);
+            this.groupBox1.Size = new System.Drawing.Size(476, 230);
             this.groupBox1.TabIndex = 13;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "选择模板";
@@ -127,7 +153,7 @@
             this.templateFlowLayoutPanel1.Location = new System.Drawing.Point(3, 26);
             this.templateFlowLayoutPanel1.Name = "templateFlowLayoutPanel1";
             this.templateFlowLayoutPanel1.Padding = new System.Windows.Forms.Padding(12, 0, 0, 0);
-            this.templateFlowLayoutPanel1.Size = new System.Drawing.Size(470, 160);
+            this.templateFlowLayoutPanel1.Size = new System.Drawing.Size(470, 201);
             this.templateFlowLayoutPanel1.TabIndex = 0;
             // 
             // fsRowCheckBox2
@@ -140,25 +166,27 @@
             // 
             // exportButton2
             // 
-            this.exportButton2.Location = new System.Drawing.Point(860, 235);
+            this.exportButton2.Location = new System.Drawing.Point(860, 284);
             this.exportButton2.Name = "exportButton2";
             this.exportButton2.Size = new System.Drawing.Size(141, 34);
             this.exportButton2.TabIndex = 12;
             this.exportButton2.Text = "导出";
             this.exportButton2.UseVisualStyleBackColor = true;
+            this.exportButton2.Click += new System.EventHandler(this.exportButton2_Click);
             // 
             // selectFileButton1
             // 
-            this.selectFileButton1.Location = new System.Drawing.Point(787, 235);
+            this.selectFileButton1.Location = new System.Drawing.Point(787, 284);
             this.selectFileButton1.Name = "selectFileButton1";
             this.selectFileButton1.Size = new System.Drawing.Size(67, 34);
             this.selectFileButton1.TabIndex = 11;
             this.selectFileButton1.Text = "选择...";
             this.selectFileButton1.UseVisualStyleBackColor = true;
+            this.selectFileButton1.Click += new System.EventHandler(this.selectFileButton1_Click);
             // 
             // exportFileTextBox1
             // 
-            this.exportFileTextBox1.Location = new System.Drawing.Point(151, 236);
+            this.exportFileTextBox1.Location = new System.Drawing.Point(151, 285);
             this.exportFileTextBox1.Name = "exportFileTextBox1";
             this.exportFileTextBox1.Size = new System.Drawing.Size(641, 30);
             this.exportFileTextBox1.TabIndex = 10;
@@ -166,7 +194,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(43, 236);
+            this.label6.Location = new System.Drawing.Point(43, 285);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(118, 24);
             this.label6.TabIndex = 9;
@@ -174,7 +202,7 @@
             // 
             // saveFileNameTextBox1
             // 
-            this.saveFileNameTextBox1.Location = new System.Drawing.Point(151, 187);
+            this.saveFileNameTextBox1.Location = new System.Drawing.Point(151, 234);
             this.saveFileNameTextBox1.Name = "saveFileNameTextBox1";
             this.saveFileNameTextBox1.Size = new System.Drawing.Size(356, 30);
             this.saveFileNameTextBox1.TabIndex = 8;
@@ -183,7 +211,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(43, 187);
+            this.label5.Location = new System.Drawing.Point(43, 234);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(118, 24);
             this.label5.TabIndex = 7;
@@ -258,7 +286,7 @@
             this.tableGroupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableGroupBox1.Location = new System.Drawing.Point(0, 88);
             this.tableGroupBox1.Name = "tableGroupBox1";
-            this.tableGroupBox1.Size = new System.Drawing.Size(1012, 675);
+            this.tableGroupBox1.Size = new System.Drawing.Size(1012, 723);
             this.tableGroupBox1.TabIndex = 1;
             this.tableGroupBox1.TabStop = false;
             this.tableGroupBox1.Text = "选择表";
@@ -278,7 +306,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1006, 646);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1006, 694);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // leftTablesListBox1
@@ -421,15 +449,15 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "服务器：";
             // 
-            // openFileDialog1
+            // folderBrowserDialog1
             // 
-            this.openFileDialog1.FileName = "openFileDialog1";
+            this.folderBrowserDialog1.UseDescriptionForTitle = true;
             // 
             // FormBatchGen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1014, 765);
+            this.ClientSize = new System.Drawing.Size(1014, 813);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "FormBatchGen";
@@ -482,10 +510,12 @@
         private Label label6;
         private Button selectFileButton1;
         private TextBox exportFileTextBox1;
-        private OpenFileDialog openFileDialog1;
         private Button exportButton2;
         private GroupBox groupBox1;
         private FlowLayoutPanel templateFlowLayoutPanel1;
         private controls.FsRowCheckBox fsRowCheckBox2;
+        private FolderBrowserDialog folderBrowserDialog1;
+        private CheckBox coverFileCheckBox1;
+        private CheckBox skipSameNameFileCheckBox1;
     }
 }

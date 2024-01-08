@@ -31,6 +31,15 @@ namespace Context
         /// 下划线转驼峰
         /// </summary>
         public bool UnderLineTranser { get; set; } = false;
+        /// <summary>
+        /// 覆盖重名文件
+        /// </summary>
+        public bool CoverExistFile { get; set; } = false;
+        /// <summary>
+        /// 跳过同名文件
+        /// </summary>
+        public bool skipSameNameFile { get; set; } = false;
+
         public ICollection<Template> Templates { get; set; }
 
         public string tableName { get; set; }
@@ -41,6 +50,7 @@ namespace Context
 
     public class Template
     {
+        public string TemplateName { get; set; }
         public string TemplatePath { get; set; }
 
         public string TemplateText { get; set; }
