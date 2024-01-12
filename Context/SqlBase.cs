@@ -11,14 +11,14 @@ namespace Context
         public SqlBase() {
         }
 
-        //static string path = Path.Combine(Directory.GetCurrentDirectory(), "freesqlgcodedb.db");
-        static string path = Path.Combine("C:\\Users\\Administrator\\Desktop", "freesqlgcodedb.db");
+        static string path = Path.Combine(Directory.GetCurrentDirectory(), "freesqlgcodedb.db");
+        //static string path = Path.Combine("C:\\Users\\Administrator\\Desktop", "freesqlgcodedb.db");
 
         public static IFreeSql fsql
             = new FreeSql.FreeSqlBuilder()
         .UseConnectionString(FreeSql.DataType.Sqlite, $"Data Source={path}")
         //.UseMonitorCommand(cmd => Console.WriteLine($"Sql：{cmd.CommandText}"))//监听SQL语句
-        // .UseAutoSyncStructure(true) //自动同步实体结构到数据库，FreeSql不会扫描程序集，只有CRUD时才会生成表。
+        .UseAutoSyncStructure(true) //自动同步实体结构到数据库，FreeSql不会扫描程序集，只有CRUD时才会生成表。
         .Build()
             ;
 

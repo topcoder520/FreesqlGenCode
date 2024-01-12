@@ -10,7 +10,7 @@ using FreeSql.DataAnnotations;
 
 namespace Model {
 
-	[JsonObject(MemberSerialization.OptIn), Table(DisableSyncStructure = true)]
+	[JsonObject(MemberSerialization.OptIn), Table(DisableSyncStructure = false)]
 	public partial class FsDatabase {
 
 		[JsonProperty, Column(IsPrimary = true, IsIdentity = true)]
