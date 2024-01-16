@@ -1,3 +1,5 @@
+using FreesqlGenCode.controls;
+
 namespace FreesqlGenCode
 {
     internal static class Program
@@ -12,6 +14,7 @@ namespace FreesqlGenCode
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             Application.Run(new Form1());
+           // Application.Run(new FormTestLine());
         }
     }
 }

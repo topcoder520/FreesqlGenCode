@@ -20,14 +20,12 @@ namespace FreesqlGenCode
                         control.Invoke((Action)delegate ()
                         {
                             frmLoading = new FormLoading(message);
-                            Common.Console.Log("Req");
                             frmLoading.ShowDialog();
                         });
                     }
                     else
                     {
                         frmLoading = new FormLoading(message);
-                        Common.Console.Log("Not Req");
                         frmLoading.ShowDialog();
                     }
                 });
@@ -47,7 +45,6 @@ namespace FreesqlGenCode
                 {
                     if (frmLoading != null)
                     {
-                        Common.Console.Log("close");
                         if (control.InvokeRequired)
                         {
                             control.Invoke(() =>

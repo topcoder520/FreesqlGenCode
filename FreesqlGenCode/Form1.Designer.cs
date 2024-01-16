@@ -83,8 +83,10 @@ namespace FreesqlGenCode
             this.dbCloseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.modelGenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.queryGenCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.listViewContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.listViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.查询生成ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.topFlowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -386,15 +388,17 @@ namespace FreesqlGenCode
             this.dbCloseToolStripMenuItem.Name = "dbCloseToolStripMenuItem";
             this.dbCloseToolStripMenuItem.Size = new System.Drawing.Size(240, 30);
             this.dbCloseToolStripMenuItem.Text = "关闭数据库";
+            this.dbCloseToolStripMenuItem.Visible = false;
             this.dbCloseToolStripMenuItem.Click += new System.EventHandler(this.dbCloseToolStripMenuItem_Click);
             // 
             // tableContextMenuStrip1
             // 
             this.tableContextMenuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.tableContextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.modelGenToolStripMenuItem});
+            this.modelGenToolStripMenuItem,
+            this.queryGenCodeToolStripMenuItem});
             this.tableContextMenuStrip1.Name = "tableContextMenuStrip1";
-            this.tableContextMenuStrip1.Size = new System.Drawing.Size(153, 34);
+            this.tableContextMenuStrip1.Size = new System.Drawing.Size(153, 64);
             // 
             // modelGenToolStripMenuItem
             // 
@@ -403,13 +407,21 @@ namespace FreesqlGenCode
             this.modelGenToolStripMenuItem.Text = "代码生成";
             this.modelGenToolStripMenuItem.Click += new System.EventHandler(this.modelGenToolStripMenuItem_Click);
             // 
+            // queryGenCodeToolStripMenuItem
+            // 
+            this.queryGenCodeToolStripMenuItem.Name = "queryGenCodeToolStripMenuItem";
+            this.queryGenCodeToolStripMenuItem.Size = new System.Drawing.Size(152, 30);
+            this.queryGenCodeToolStripMenuItem.Text = "查询生成";
+            this.queryGenCodeToolStripMenuItem.Click += new System.EventHandler(this.queryGenCodeToolStripMenuItem_Click);
+            // 
             // listViewContextMenuStrip1
             // 
             this.listViewContextMenuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.listViewContextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.listViewToolStripMenuItem});
+            this.listViewToolStripMenuItem,
+            this.查询生成ToolStripMenuItem1});
             this.listViewContextMenuStrip1.Name = "listViewContextMenuStrip1";
-            this.listViewContextMenuStrip1.Size = new System.Drawing.Size(153, 34);
+            this.listViewContextMenuStrip1.Size = new System.Drawing.Size(153, 64);
             // 
             // listViewToolStripMenuItem
             // 
@@ -417,6 +429,12 @@ namespace FreesqlGenCode
             this.listViewToolStripMenuItem.Size = new System.Drawing.Size(152, 30);
             this.listViewToolStripMenuItem.Text = "代码生成";
             this.listViewToolStripMenuItem.Click += new System.EventHandler(this.listViewToolStripMenuItem_Click);
+            // 
+            // 查询生成ToolStripMenuItem1
+            // 
+            this.查询生成ToolStripMenuItem1.Name = "查询生成ToolStripMenuItem1";
+            this.查询生成ToolStripMenuItem1.Size = new System.Drawing.Size(152, 30);
+            this.查询生成ToolStripMenuItem1.Text = "查询生成";
             // 
             // Form1
             // 
@@ -480,5 +498,7 @@ namespace FreesqlGenCode
         private ColumnHeader columnCommentHeader1;
         private ContextMenuStrip listViewContextMenuStrip1;
         private ToolStripMenuItem listViewToolStripMenuItem;
+        private ToolStripMenuItem queryGenCodeToolStripMenuItem;
+        private ToolStripMenuItem 查询生成ToolStripMenuItem1;
     }
 }

@@ -112,6 +112,19 @@ namespace Context
             return info;
         }
 
+        public List<string> GetColNameList(string tableName)
+        {
+            DbTableInfo dbTableInfo = freeSql.DbFirst.GetTableByName(tableName);
+            List<DbColumnInfo> listCol = dbTableInfo.Columns;
+
+            List<string> lists = new List<string>();
+            foreach (var item in listCol)
+            {
+                lists.Add(item.Name);
+            }
+            return lists;
+        }
+
         public List<List<string>> GetColInfos(string tableName)
         {
             DbTableInfo dbTableInfo = freeSql.DbFirst.GetTableByName(tableName); 

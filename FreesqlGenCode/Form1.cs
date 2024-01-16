@@ -4,6 +4,7 @@ using Context;
 using DataDefine;
 using FreesqlGenCode.controls;
 using Model;
+using System.IO;
 using System.Windows.Forms;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
@@ -199,14 +200,14 @@ namespace FreesqlGenCode
                     {
                         openDBToolStripMenuItem.Visible = false;
                         refreshDBToolStripMenuItem.Visible = true;
-                        dbCloseToolStripMenuItem.Visible = true;
+                        //dbCloseToolStripMenuItem.Visible = true;
                         mulTableToolStripMenuItem.Visible = true;
                     }
                     else
                     {
                         openDBToolStripMenuItem.Visible = true;
                         refreshDBToolStripMenuItem.Visible = false;
-                        dbCloseToolStripMenuItem.Visible = false;
+                       // dbCloseToolStripMenuItem.Visible = false;
                         mulTableToolStripMenuItem.Visible = true;
                     }
                     this.dbContextMenuStrip1.Show(treeView1, e.Location);
@@ -738,8 +739,6 @@ namespace FreesqlGenCode
                 {
                     return;
                 }
-                
-
 
                 FsDatabase fsDatabase = (FsDatabase)node.Tag;
                 DBConnect dBConnect = ContextUtils.GetDBConnect(fsDatabase.DBKey);
@@ -777,6 +776,54 @@ namespace FreesqlGenCode
                     return;
                 }
             }
+        }
+        /// <summary>
+        /// 查询代码生成
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void queryGenCodeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TreeNode node = treeView1.SelectedNode;
+            if (node == null)
+            {
+                return;
+            }
+
+            openGenCodeSqlPage(node);
+        }
+
+        private void openGenCodeSqlPage(TreeNode node)
+        {
+            FsDatabase fsDatabase = (FsDatabase)node.Tag;
+            TreeNode parentNode = node.Parent;
+            string selTable = parentNode.Text + "." + node.Text;
+            TabPageTag tag = new TabPageTag();
+            tag.DBKey = fsDatabase.DBKey;
+            tag.TableName = selTable;
+            tag.fsDatabase = fsDatabase;
+            tag.treeNodeTableNode = node;
+            TabPage tabPage = new TabPage();
+            MyGenCodeSqlControl codeControl = new MyGenCodeSqlControl();
+            codeControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            codeControl.Location = new System.Drawing.Point(0, 0);
+            codeControl.Name = "gencodesqlControl";
+            codeControl.Padding = new System.Windows.Forms.Padding(3);
+            codeControl.TabIndex = 0;
+            codeControl.fsShowTables1.Tag = node;
+
+            FsTableControl fsTable = new FsTableControl();
+            fsTable.Text = node.Text;
+            fsTable.TableId = 0;
+            fsTable.Col = 0;
+
+            codeControl.fsShowTables1.AddTableControl(fsTable);
+            tabPage.Controls.Add(codeControl);
+            tabPage.Text = node.Text;
+            tabPage.ToolTipText = tabPage.Text;
+            tabPage.Tag = tag;
+            tabControl1.TabPages.Add(tabPage);
+            tabControl1.SelectedTab = tabPage;
         }
     }
 
