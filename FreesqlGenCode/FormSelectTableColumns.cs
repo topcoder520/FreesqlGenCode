@@ -50,16 +50,19 @@ namespace FreesqlGenCode
                     foreach(FsTableControl node in fsTable.NextNodeList)
                     {
                         FsLine line = node.Tag as FsLine;
-                        if(line.Flag == 1)
+                        if(line.Flag == 1 && line.StartColumn == SelectedFieldName)
                         {
                             JoinTableColumnRow row = GetColumnRow(line);
                             this.flowLayoutPanel1.Controls.Add(row);
                         }
                     }
+                }
+                if (fsTable.PreNextNodeList.Count > 0)
+                {
                     foreach (FsTableControl node in fsTable.PreNextNodeList)
                     {
                         FsLine line = node.Tag as FsLine;
-                        if (line.Flag == 1)
+                        if (line.Flag == 1 && line.StartColumn == SelectedFieldName)
                         {
                             JoinTableColumnRow row = GetColumnRow(line);
                             this.flowLayoutPanel1.Controls.Add(row);
@@ -193,6 +196,8 @@ namespace FreesqlGenCode
 
         private List<FsLine> fsLinesDel = new List<FsLine>();
 
+        public event EventHandler SaveDataEvent;
+
         /// <summary>
         /// 保存
         /// </summary>
@@ -227,6 +232,7 @@ namespace FreesqlGenCode
                     }
                 }
             }
+            SaveDataEvent?.Invoke(this, EventArgs.Empty);
             this.Close();
         }
         /// <summary>

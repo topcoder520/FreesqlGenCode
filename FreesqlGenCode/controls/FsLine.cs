@@ -52,6 +52,16 @@ namespace FreesqlGenCode.controls
             bush.Dispose();
             pen.Dispose();
         }
+
+        public void ResetPoint()
+        {
+            if(this.Node != null)
+            {
+                this._Start = this.Node.PrevNode.RightPoint();
+                this._End = this.Node.LeftPoint(-10);
+            }
+        }
+
     }
 
     public partial class FsLine

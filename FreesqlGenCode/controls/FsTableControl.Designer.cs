@@ -39,13 +39,16 @@ namespace FreesqlGenCode.controls
             // 
             // panel1
             // 
+            this.panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.tableNameLabel1);
             this.panel1.Controls.Add(this.tableLeftPictureBox1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(116, 32);
+            this.panel1.Size = new System.Drawing.Size(118, 34);
             this.panel1.TabIndex = 0;
+            this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
             // tableNameLabel1
             // 
@@ -55,7 +58,10 @@ namespace FreesqlGenCode.controls
             this.tableNameLabel1.Size = new System.Drawing.Size(63, 24);
             this.tableNameLabel1.TabIndex = 1;
             this.tableNameLabel1.Text = "label1";
+            this.tableNameLabel1.DoubleClick += new System.EventHandler(this.tableNameLabel1_DoubleClick);
             this.tableNameLabel1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.FsTableControl_MouseClick);
+            this.tableNameLabel1.MouseEnter += new System.EventHandler(this.tableNameLabel1_Enter);
+            this.tableNameLabel1.MouseLeave += new System.EventHandler(this.tableNameLabel1_Leave);
             // 
             // tableLeftPictureBox1
             // 
@@ -67,17 +73,19 @@ namespace FreesqlGenCode.controls
             this.tableLeftPictureBox1.Size = new System.Drawing.Size(22, 21);
             this.tableLeftPictureBox1.TabIndex = 0;
             this.tableLeftPictureBox1.TabStop = false;
+            this.tableLeftPictureBox1.DoubleClick += new System.EventHandler(this.tableNameLabel1_DoubleClick);
             this.tableLeftPictureBox1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.FsTableControl_MouseClick);
+            this.tableLeftPictureBox1.MouseEnter += new System.EventHandler(this.tableNameLabel1_Enter);
+            this.tableLeftPictureBox1.MouseLeave += new System.EventHandler(this.tableNameLabel1_Leave);
             // 
             // FsTableControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Controls.Add(this.panel1);
             this.Name = "FsTableControl";
-            this.Size = new System.Drawing.Size(116, 32);
+            this.Size = new System.Drawing.Size(118, 34);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tableLeftPictureBox1)).EndInit();

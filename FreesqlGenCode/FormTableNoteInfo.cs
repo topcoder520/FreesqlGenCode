@@ -39,47 +39,7 @@ namespace FreesqlGenCode
             base.OnLoad(e);
             FsTableControl fsTable = this.Tag as FsTableControl;
             fsTable.PreNextNodeList.Clear();
-            FsLine fsLine = fsTable.Tag as FsLine;
-            if (fsLine != null)
-            {
-                aliasTextBox1.Text = fsLine.EndTableAlias;
-            }
-            DBConnect dBConnect = ContextUtils.GetDBConnect(DBKey);
-            if (dBConnect != null && dBConnect.TestConnect())
-            {
-                await this.ShowLoadingAsync("正在加载数据...", (control) =>
-                {
-                    List<List<string>> lstCol = dBConnect.GetColInfos(TableName);
-                    List<string> queryFields = fsTable.QueryFields;
-                    List<FsTableControl> childNotes = fsTable.NextNodeList;
-                    control.Invoke(() =>
-                    {
-                        foreach (List<string> colInfo in lstCol)
-                        {
-                            string joinInfo = string.Empty;
-                            if (childNotes.Count > 0)
-                            {
-                                foreach (FsTableControl node in childNotes)
-                                {
-                                    FsLine line = node.Tag as FsLine;
-                                    line.Flag = 1;
-                                    if (line.StartColumn == colInfo[0])
-                                    {
-                                        joinInfo += line.GetSimpleString();
-                                    }
-                                }
-                            }
-                            bool isChecked = queryFields.Contains(colInfo[0]);
-                            dataGridView1.Rows.Add(new object[] { colInfo[0], colInfo[4], colInfo[9], isChecked, joinInfo});
-                        }
-                    });
-                    return Task.CompletedTask;
-                });
-            }
-            else
-            {
-                MessageBox.Show("连接失败!"+dBConnect.GetException());
-            }
+            LoadData(null,e);
         }
 
         private void saveTableAlias()
@@ -120,6 +80,66 @@ namespace FreesqlGenCode
             }
         }
 
+        private async void LoadData(object? sender, EventArgs e)
+        {
+            FsTableControl fsTable = this.Tag as FsTableControl;
+            FsLine fsLine = fsTable.Tag as FsLine;
+            if (fsLine != null)
+            {
+                aliasTextBox1.Text = fsLine.EndTableAlias;
+            }
+            DBConnect dBConnect = ContextUtils.GetDBConnect(DBKey);
+            if (dBConnect != null && dBConnect.TestConnect())
+            {
+                await this.ShowLoadingAsync("正在加载数据...", (control) =>
+                {
+                    List<List<string>> lstCol = dBConnect.GetColInfos(TableName);
+                    List<string> queryFields = fsTable.QueryFields;
+                    List<FsTableControl> childNotes = fsTable.NextNodeList;
+                    List<FsTableControl> preChildNotes = fsTable.PreNextNodeList;
+                    control.Invoke(() =>
+                    {
+                        foreach (List<string> colInfo in lstCol)
+                        {
+                            string joinInfo = string.Empty;
+                            if (childNotes.Count > 0)
+                            {
+                                foreach (FsTableControl node in childNotes)
+                                {
+                                    FsLine line = node.Tag as FsLine;
+                                    line.Flag = 1;
+                                    if (line.StartColumn == colInfo[0])
+                                    {
+                                        joinInfo += line.GetSimpleString();
+                                    }
+                                }
+                            }
+                            if (preChildNotes.Count > 0)
+                            {
+                                foreach (FsTableControl node in preChildNotes)
+                                {
+                                    FsLine line = node.Tag as FsLine;
+                                    line.Flag = 1;
+                                    if (line.StartColumn == colInfo[0])
+                                    {
+                                        joinInfo += line.GetSimpleString();
+                                    }
+                                }
+                            }
+                            bool isChecked = queryFields.Contains(colInfo[0]);
+                            dataGridView1.Rows.Add(new object[] { colInfo[0], colInfo[4], colInfo[9], isChecked, joinInfo });
+                        }
+                    });
+                    return Task.CompletedTask;
+                });
+            }
+            else
+            {
+                MessageBox.Show("连接失败!" + dBConnect.GetException());
+            }
+        }
+
+
         /// <summary>
         /// 点击单元格
         /// </summary>
@@ -135,12 +155,54 @@ namespace FreesqlGenCode
                 FormSelectTableColumns formSelectTable = new FormSelectTableColumns(DBKey, Database, fieldNameCell, TableNameAlias);
                 formSelectTable.Text = "选择外键字段";
                 formSelectTable.Tag = this.Tag;
+                formSelectTable.SaveDataEvent += new EventHandler(ResetGridDataView);
                 formSelectTable.ShowDialog();
             }else if(dataGridView1.Columns[e.ColumnIndex].Name == "IsShowQuery")
             {//点击checkbox
                 
             }
         }
+
+        private void ResetGridDataView(object? sender,EventArgs e)
+        {
+            FsTableControl fsTable = this.Tag as FsTableControl;
+            List<FsTableControl> nextNodes = fsTable.NextNodeList;
+            List<FsTableControl> peNextNodes = fsTable.PreNextNodeList;
+            int cnt = dataGridView1.Rows.Count;
+            for (int i = 0; i < cnt; i++)
+            {
+                string joinInfo = string.Empty;
+                if(dataGridView1.Rows[i].Cells[0].Value != null)
+                {
+                    string fieldName = dataGridView1.Rows[i].Cells[0].Value.ToString();
+                    if (nextNodes.Count > 0)
+                    {
+                        foreach (FsTableControl node in nextNodes)
+                        {
+                            FsLine line = node.Tag as FsLine;
+                            if (line.Flag ==1 && line.StartColumn == fieldName)
+                            {
+                                joinInfo += line.GetSimpleString();
+                            }
+                        }
+                    }
+                    if (peNextNodes.Count > 0)
+                    {
+                        foreach (FsTableControl node in peNextNodes)
+                        {
+                            FsLine line = node.Tag as FsLine;
+                            if (line.Flag == 1 && line.StartColumn == fieldName)
+                            {
+                                joinInfo += line.GetSimpleString();
+                            }
+                        }
+                    }
+                    dataGridView1.Rows[i].Cells[4].Value = joinInfo;
+                }
+
+            }
+        }
+
         /// <summary>
         /// 全部查询 点击选择所有字段
         /// </summary>

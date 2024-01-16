@@ -72,6 +72,7 @@ namespace FreesqlGenCode.controls
             base.OnPaint(e);
             for (int i = 0; i < fsLines.Count; i++)
             {
+                fsLines[i].ResetPoint();
                 fsLines[i].OnPaint(e);
             }
         }
@@ -113,6 +114,7 @@ namespace FreesqlGenCode.controls
                 table.TableId = ++TableId;
             }
             table.SelectedNoteEvent += SelectedNoteEvent;
+            table.DoubleClickNodeEvent += editNoteToolStripMenuItem_Click;
 
             int col = table.Col;
             if (col < 0)

@@ -34,12 +34,15 @@
             this.genCodeTablePanel1 = new System.Windows.Forms.Panel();
             this.fsShowTables1 = new FreesqlGenCode.controls.FsShowTables();
             this.topPanel1 = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.genCodeTablePanel1.SuspendLayout();
+            this.topPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -85,29 +88,53 @@
             // 
             this.genCodeTablePanel1.Controls.Add(this.fsShowTables1);
             this.genCodeTablePanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.genCodeTablePanel1.Location = new System.Drawing.Point(0, 42);
+            this.genCodeTablePanel1.Location = new System.Drawing.Point(0, 36);
             this.genCodeTablePanel1.Name = "genCodeTablePanel1";
-            this.genCodeTablePanel1.Size = new System.Drawing.Size(1057, 652);
+            this.genCodeTablePanel1.Size = new System.Drawing.Size(1057, 658);
             this.genCodeTablePanel1.TabIndex = 1;
             // 
             // fsShowTables1
             // 
             this.fsShowTables1.AutoScroll = true;
             this.fsShowTables1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.fsShowTables1.ColWidth = 400;
             this.fsShowTables1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.fsShowTables1.Location = new System.Drawing.Point(0, 0);
             this.fsShowTables1.MarginTopBottomOfTable = 35;
             this.fsShowTables1.Name = "fsShowTables1";
-            this.fsShowTables1.Size = new System.Drawing.Size(1057, 652);
+            this.fsShowTables1.SelectedNote = null;
+            this.fsShowTables1.Size = new System.Drawing.Size(1057, 658);
             this.fsShowTables1.TabIndex = 0;
             // 
             // topPanel1
             // 
+            this.topPanel1.Controls.Add(this.button2);
+            this.topPanel1.Controls.Add(this.button1);
             this.topPanel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.topPanel1.Location = new System.Drawing.Point(0, 0);
             this.topPanel1.Name = "topPanel1";
-            this.topPanel1.Size = new System.Drawing.Size(1057, 42);
+            this.topPanel1.Size = new System.Drawing.Size(1057, 36);
             this.topPanel1.TabIndex = 0;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(663, 2);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(54, 30);
+            this.button1.TabIndex = 0;
+            this.button1.Text = "保存";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // button2
+            // 
+            this.button2.Font = new System.Drawing.Font("Microsoft YaHei UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.button2.Location = new System.Drawing.Point(749, 2);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(96, 29);
+            this.button2.TabIndex = 1;
+            this.button2.Text = "生成SQL";
+            this.button2.UseVisualStyleBackColor = true;
             // 
             // MyGenCodeSqlControl
             // 
@@ -122,6 +149,7 @@
             this.splitContainer1.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.genCodeTablePanel1.ResumeLayout(false);
+            this.topPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -134,5 +162,7 @@
         private Panel topPanel1;
         private Panel genCodeTablePanel1;
         public FsShowTables fsShowTables1;
+        private Button button2;
+        private Button button1;
     }
 }
