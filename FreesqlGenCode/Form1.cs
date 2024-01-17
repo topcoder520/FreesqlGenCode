@@ -13,7 +13,9 @@ namespace FreesqlGenCode
 {
     public partial class Form1 : Form
     {
-        private BllFsDatabase bllFsDatabase = new BllFsDatabase();
+        private readonly BllFsDatabase bllFsDatabase = new BllFsDatabase();
+        private readonly BllFsQueryView bllFsQueryView = new BllFsQueryView();
+
 
         public Form1()
         {
@@ -811,16 +813,30 @@ namespace FreesqlGenCode
             codeControl.Padding = new System.Windows.Forms.Padding(3);
             codeControl.TabIndex = 0;
             codeControl.fsShowTables1.Tag = node;
+            codeControl.SaveViewNodeTreeEvent += new EventHandler((object? sender,EventArgs e) =>
+            {
+                //保存节点树
+                if(sender == null)
+                {
+                    return;
+                }
+                //保存查询View记录
+                bllFsQueryView.Add(new FsQueryView() { 
+                    
+                });
+                FsShowTables fsShowTables = sender as FsShowTables;
+
+
+            });
 
             FsTableControl fsTable = new FsTableControl();
-            fsTable.Text = node.Text;
-            fsTable.TableId = 0;
+            fsTable.Text = selTable;
             fsTable.Col = 0;
 
             codeControl.fsShowTables1.AddTableControl(fsTable);
             tabPage.Controls.Add(codeControl);
-            tabPage.Text = node.Text;
-            tabPage.ToolTipText = tabPage.Text;
+            tabPage.Text = selTable;
+            tabPage.ToolTipText = selTable;
             tabPage.Tag = tag;
             tabControl1.TabPages.Add(tabPage);
             tabControl1.SelectedTab = tabPage;

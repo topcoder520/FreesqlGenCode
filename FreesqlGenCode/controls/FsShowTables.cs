@@ -32,12 +32,19 @@ namespace FreesqlGenCode.controls
                 TreeNode parentNode = node.Parent;
 
                FsLine fsLine = fsTable.Tag as FsLine;
-               fsLine.EndTable = parentNode.Text + "." + fsTable.Text;
-                
+                if (fsTable.Text.StartsWith(parentNode.Text + "."))
+                {
+                    fsLine.EndTable = fsTable.Text;
+                }
+                else
+                {
+                    fsLine.EndTable = parentNode.Text + "." + fsTable.Text;
+                }
+
                 FsDatabase fsDatabase = node.Tag as FsDatabase;
                 string DBKey = fsDatabase.DBKey;
                 string tableName = string.Empty;
-                if (fsTable.Text.StartsWith(parentNode.Text))
+                if (fsTable.Text.StartsWith(parentNode.Text+"."))
                 {
                     tableName= fsTable.Text;
                 }

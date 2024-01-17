@@ -17,10 +17,6 @@ namespace FreesqlGenCode.controls
 
         public FsLine() { }
 
-        public FsLine(Point Start,Point End) {
-            this._Start = new Point(Start.X, Start.Y);
-            this._End = new Point(End.X,End.Y);
-        }
         public Point GetStart() { return new Point(_Start.X, _Start.Y); }
 
         public Point GetEnd() { return new Point(_End.X, _End.Y); }
@@ -122,7 +118,21 @@ namespace FreesqlGenCode.controls
         {
             string StartTableName = GetStartTableName();
             string EndTableName = GetEndTableName();
-            return string.Join("",new string[] {" ",JoinType.GetDescription()," ", EndTable," ",EndTableAlias, " ON ",EndTableName,".",EndColumn," = ",StartTableName,".",StartColumn," \n"});
+            StringBuilder sb = new StringBuilder();
+            sb.Append(JoinType.GetDescription());
+            sb.Append(" ");
+            sb.Append(EndTable);
+            sb.Append(" ");
+            sb.Append(EndTableAlias);
+            sb.Append(" ON ");
+            sb.Append(EndTableName);
+            sb.Append(".");
+            sb.Append(EndColumn);
+            sb.Append(" = ");
+            sb.Append(StartTableName);
+            sb.Append(".");
+            sb.Append(StartColumn);
+            return sb.ToString();
         }
 
         public string GetSimpleString()
@@ -133,11 +143,11 @@ namespace FreesqlGenCode.controls
 
     public enum EnumJoinType
     {
-        [System.ComponentModel.Description(" LEFT JOIN ")]
+        [System.ComponentModel.Description("LEFT JOIN ")]
         LeftJoin = 0,
-        [System.ComponentModel.Description(" RIGHT JOIN ")]
+        [System.ComponentModel.Description("RIGHT JOIN ")]
         RightJoin = 1,
-        [System.ComponentModel.Description(" INNER JOIN ")]
+        [System.ComponentModel.Description("INNER JOIN ")]
         InnerJoin = 2,
     }
 }

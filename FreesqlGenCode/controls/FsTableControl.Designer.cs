@@ -111,7 +111,7 @@ namespace FreesqlGenCode.controls
                 {
                     return;
                 }
-                this._internalToolTip.SetToolTip(this, value);
+                this._internalToolTip.SetToolTip(this.tableNameLabel1, value);
             }
         }
         [DefaultValue("")]
@@ -132,7 +132,7 @@ namespace FreesqlGenCode.controls
                 }
 
                 //tableNameLabel1.Text = value;
-                _internalToolTip.SetToolTip(this, value);
+                _internalToolTip.SetToolTip(this.tableNameLabel1, value);
             }
         }
         /// <summary>

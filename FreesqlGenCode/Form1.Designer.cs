@@ -360,33 +360,33 @@ namespace FreesqlGenCode
             this.mulTableToolStripMenuItem,
             this.dbCloseToolStripMenuItem});
             this.dbContextMenuStrip1.Name = "dbContextMenuStrip1";
-            this.dbContextMenuStrip1.Size = new System.Drawing.Size(241, 157);
+            this.dbContextMenuStrip1.Size = new System.Drawing.Size(171, 124);
             // 
             // openDBToolStripMenuItem
             // 
             this.openDBToolStripMenuItem.Name = "openDBToolStripMenuItem";
-            this.openDBToolStripMenuItem.Size = new System.Drawing.Size(240, 30);
+            this.openDBToolStripMenuItem.Size = new System.Drawing.Size(170, 30);
             this.openDBToolStripMenuItem.Text = "打开数据库";
             this.openDBToolStripMenuItem.Click += new System.EventHandler(this.openDBToolStripMenuItem_Click);
             // 
             // refreshDBToolStripMenuItem
             // 
             this.refreshDBToolStripMenuItem.Name = "refreshDBToolStripMenuItem";
-            this.refreshDBToolStripMenuItem.Size = new System.Drawing.Size(240, 30);
+            this.refreshDBToolStripMenuItem.Size = new System.Drawing.Size(170, 30);
             this.refreshDBToolStripMenuItem.Text = "刷新数据库";
             this.refreshDBToolStripMenuItem.Click += new System.EventHandler(this.openDBToolStripMenuItem_Click);
             // 
             // mulTableToolStripMenuItem
             // 
             this.mulTableToolStripMenuItem.Name = "mulTableToolStripMenuItem";
-            this.mulTableToolStripMenuItem.Size = new System.Drawing.Size(240, 30);
+            this.mulTableToolStripMenuItem.Size = new System.Drawing.Size(170, 30);
             this.mulTableToolStripMenuItem.Text = "批量生成";
             this.mulTableToolStripMenuItem.Click += new System.EventHandler(this.mulTableGenToolStripMenuItem_Click);
             // 
             // dbCloseToolStripMenuItem
             // 
             this.dbCloseToolStripMenuItem.Name = "dbCloseToolStripMenuItem";
-            this.dbCloseToolStripMenuItem.Size = new System.Drawing.Size(240, 30);
+            this.dbCloseToolStripMenuItem.Size = new System.Drawing.Size(170, 30);
             this.dbCloseToolStripMenuItem.Text = "关闭数据库";
             this.dbCloseToolStripMenuItem.Visible = false;
             this.dbCloseToolStripMenuItem.Click += new System.EventHandler(this.dbCloseToolStripMenuItem_Click);
@@ -444,6 +444,7 @@ namespace FreesqlGenCode
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.topFlowLayoutPanel1);
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FreesqlGenCode代码工具";
             this.topFlowLayoutPanel1.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);

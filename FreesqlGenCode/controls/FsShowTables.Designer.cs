@@ -1,6 +1,7 @@
 ﻿using Dm;
 using MySqlX.XDevAPI.Relational;
 using System.ComponentModel;
+using System.Text;
 
 namespace FreesqlGenCode.controls
 {
@@ -88,6 +89,12 @@ namespace FreesqlGenCode.controls
         public int MarginTopBottomOfTable { get; set; } = 35;
 
         private Dictionary<int, List<FsTableControl>> pairsTable = new Dictionary<int, List<FsTableControl>>();
+
+        public FsTableControl GetFirstNode()
+        {
+            List<FsTableControl> fsTables = pairsTable[0];
+            return fsTables.FirstOrDefault();
+        }
 
         public FsTableControl SelectedNote { get; set; }
 
@@ -228,6 +235,66 @@ namespace FreesqlGenCode.controls
                 }
             }
         }
+
+        public string GetSql(FsTableControl firstNode)
+        {
+            StringBuilder selectBuilder = new StringBuilder();
+            selectBuilder.AppendLine(" SELECT ");
+            StringBuilder fieldBuilder = new StringBuilder();
+            StringBuilder joinBuilder = new StringBuilder();
+            FsLine fsLine = firstNode.Tag as FsLine;
+            joinBuilder.AppendLine(" FROM ");
+            joinBuilder.AppendLine("    " + fsLine.EndTable+" "+fsLine.EndTableAlias);
+            if (firstNode.QueryFields.Count > 0)
+            {
+                string tableName = fsLine.GetEndTableName();
+                for (int i = 0; i < firstNode.QueryFields.Count; i++)
+                {
+                    string fieldName = firstNode.QueryFields[i];
+                    fieldBuilder.AppendLine("    "+tableName + "." + fieldName + ",");
+                }
+            }
+            getsql(fieldBuilder,joinBuilder,firstNode);
+            if(fieldBuilder.Length == 0)
+            {
+                fieldBuilder.AppendLine("    "+fsLine.GetEndTableName()+".*");
+                selectBuilder.Append(fieldBuilder)
+                         .Append(joinBuilder);
+            }
+            else
+            {
+                string fieldstr = fieldBuilder.ToString();
+                fieldstr = fieldstr.Substring(0,fieldstr.LastIndexOf(','));
+                selectBuilder.AppendLine(fieldstr)
+                         .Append(joinBuilder);
+            }
+            return selectBuilder.ToString();
+        }
+
+        private void getsql(StringBuilder fields,StringBuilder joinTables,FsTableControl parentNode)
+        {
+            if (parentNode.NextNodeList.Count == 0)
+            {
+                return;
+            }
+            foreach (var node in parentNode.NextNodeList)
+            {
+                FsLine fsLine = node.Tag as FsLine;
+                if (node.QueryFields.Count > 0)
+                {
+                    string tableName = fsLine.GetEndTableName();
+                    for (int i = 0; i < node.QueryFields.Count; i++)
+                    {
+                        string fieldName = node.QueryFields[i];
+                        fields.AppendLine("    " + tableName + "." + fieldName + ",");
+                    }
+                }
+                joinTables.AppendLine(" "+fsLine.ToString());
+                getsql(fields,joinTables,node);
+            }
+        }
+
+
         #endregion
 
         #region lineNode 线
@@ -238,6 +305,9 @@ namespace FreesqlGenCode.controls
             if (line == null)
             {
                 line = new FsLine();
+
+                line.EndTable = node.Text;
+
             }
             Point reEnd = node.LeftPoint(-10);
             line.SetEnd(reEnd);
