@@ -86,7 +86,6 @@ namespace FreesqlGenCode
             this.queryGenCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.listViewContextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.listViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.查询生成ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.topFlowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -418,23 +417,16 @@ namespace FreesqlGenCode
             // 
             this.listViewContextMenuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.listViewContextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.listViewToolStripMenuItem,
-            this.查询生成ToolStripMenuItem1});
+            this.listViewToolStripMenuItem});
             this.listViewContextMenuStrip1.Name = "listViewContextMenuStrip1";
-            this.listViewContextMenuStrip1.Size = new System.Drawing.Size(153, 64);
+            this.listViewContextMenuStrip1.Size = new System.Drawing.Size(241, 67);
             // 
             // listViewToolStripMenuItem
             // 
             this.listViewToolStripMenuItem.Name = "listViewToolStripMenuItem";
-            this.listViewToolStripMenuItem.Size = new System.Drawing.Size(152, 30);
+            this.listViewToolStripMenuItem.Size = new System.Drawing.Size(240, 30);
             this.listViewToolStripMenuItem.Text = "代码生成";
             this.listViewToolStripMenuItem.Click += new System.EventHandler(this.listViewToolStripMenuItem_Click);
-            // 
-            // 查询生成ToolStripMenuItem1
-            // 
-            this.查询生成ToolStripMenuItem1.Name = "查询生成ToolStripMenuItem1";
-            this.查询生成ToolStripMenuItem1.Size = new System.Drawing.Size(152, 30);
-            this.查询生成ToolStripMenuItem1.Text = "查询生成";
             // 
             // Form1
             // 
@@ -501,5 +493,6 @@ namespace FreesqlGenCode
         private ToolStripMenuItem listViewToolStripMenuItem;
         private ToolStripMenuItem queryGenCodeToolStripMenuItem;
         private ToolStripMenuItem 查询生成ToolStripMenuItem1;
+        private ToolStripMenuItem queryViewToolStripMenuItem2;
     }
 }

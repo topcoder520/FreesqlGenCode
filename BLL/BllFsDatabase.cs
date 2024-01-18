@@ -34,7 +34,7 @@ namespace BLL
         public int Add(FsDatabase model) { 
             if (string.IsNullOrWhiteSpace(model.DBKey))
             {
-                model.DBKey = MD5Helper.EncryptString(model.ConnectString);
+                model.DBKey = Guid.NewGuid().ToString();
             }
             return dal.Add(model);
         }
@@ -44,7 +44,7 @@ namespace BLL
             {
                 if (string.IsNullOrWhiteSpace(fsDatabase.DBKey))
                 {
-                    fsDatabase.DBKey = MD5Helper.EncryptString(fsDatabase.ConnectString);
+                    fsDatabase.DBKey = Guid.NewGuid().ToString();
                 }
             }
             return dal.BatchInsert(listModel);

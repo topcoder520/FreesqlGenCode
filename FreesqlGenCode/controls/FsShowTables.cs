@@ -18,6 +18,9 @@ namespace FreesqlGenCode.controls
         {
             InitializeComponent();
         }
+
+        public event EventHandler ShowTablesChanged;
+
         /// <summary>
         /// 编辑节点
         /// </summary>
@@ -31,31 +34,40 @@ namespace FreesqlGenCode.controls
                 TreeNode node = this.Tag as TreeNode;
                 TreeNode parentNode = node.Parent;
 
-               FsLine fsLine = fsTable.Tag as FsLine;
-                if (fsTable.Text.StartsWith(parentNode.Text + "."))
+                FsLine fsLine = fsTable.Tag as FsLine;
+                if(parentNode != null )
                 {
-                    fsLine.EndTable = fsTable.Text;
+                    if (fsTable.Text.StartsWith(parentNode.Text + "."))
+                    {
+                        fsLine.EndTable = fsTable.Text;
+                    }
+                    else
+                    {
+                        fsLine.EndTable = parentNode.Text + "." + fsTable.Text;
+                    }
                 }
-                else
-                {
-                    fsLine.EndTable = parentNode.Text + "." + fsTable.Text;
-                }
-
                 FsDatabase fsDatabase = node.Tag as FsDatabase;
                 string DBKey = fsDatabase.DBKey;
                 string tableName = string.Empty;
-                if (fsTable.Text.StartsWith(parentNode.Text+"."))
+                if (fsDatabase != null)
                 {
-                    tableName= fsTable.Text;
-                }
-                else
-                {
-                    tableName = parentNode.Text + "." + fsTable.Text;
+                    if (fsTable.Text.StartsWith(parentNode.Text + "."))
+                    {
+                        tableName = fsTable.Text;
+                    }
+                    else
+                    {
+                        tableName = parentNode.Text + "." + fsTable.Text;
+                    }
                 }
                 FormTableNoteInfo tableNoteInfo = new FormTableNoteInfo(DBKey, parentNode.Text, tableName);
                 tableNoteInfo.StartPosition = FormStartPosition.CenterScreen;
                 tableNoteInfo.Text = "节点信息 " + tableName;
                 tableNoteInfo.Tag = fsTable;
+                tableNoteInfo.ChangedEventHandler += new EventHandler((sender,e) =>
+                {
+                    ShowTablesChanged?.Invoke(this, new EventArgs());
+                });
                 tableNoteInfo.AddNodeEvent += new EventHandler((sender, e) =>
                 {
                     FsTableControl node = sender as FsTableControl;

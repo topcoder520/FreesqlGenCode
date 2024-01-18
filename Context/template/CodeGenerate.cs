@@ -19,7 +19,12 @@ namespace Context
     {
         public async Task<List<string>> Setup(TaskBuild taskBuild, string tableName)
         {
-            DbTableInfo tableInfo = taskBuild.tableInfos.Where(a=>a.Name== tableName).FirstOrDefault();
+            string prefix = "";
+            if(tableName.LastIndexOf('.') != -1)
+            {
+                prefix = tableName.Substring(0, tableName.LastIndexOf("."));
+            }
+            DbTableInfo tableInfo = taskBuild.tableInfos.Where(a=> (prefix+"."+a.Name)== tableName).FirstOrDefault();
             try
             {
                 var listText =  await Task.Run(() =>

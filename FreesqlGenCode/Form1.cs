@@ -6,6 +6,7 @@ using FreesqlGenCode.controls;
 using Model;
 using System.IO;
 using System.Windows.Forms;
+using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -14,8 +15,8 @@ namespace FreesqlGenCode
     public partial class Form1 : Form
     {
         private readonly BllFsDatabase bllFsDatabase = new BllFsDatabase();
+        private readonly BllFsTableNode bllFsTableNode = new BllFsTableNode();
         private readonly BllFsQueryView bllFsQueryView = new BllFsQueryView();
-
 
         public Form1()
         {
@@ -359,7 +360,7 @@ namespace FreesqlGenCode
             }
             //建立连接
             //查询连接的数据库列表
-            Context.DBConnect dBConnect = Context.ContextUtils.CreateConnectDB(enumDatabase, fsDatabase.ConnectString);
+            Context.DBConnect dBConnect = Context.ContextUtils.CreateConnectDB(enumDatabase, fsDatabase.DBKey, fsDatabase.ConnectString);
             if (dBConnect.TestConnect())
             {
                 this.ShowLoadingAsync("正在加载数据...", (control) => {
@@ -409,7 +410,7 @@ namespace FreesqlGenCode
                     node.Nodes.Clear();
                     foreach (var item in lst)
                     {
-                        TreeNode tableNode = new TreeNode(item, 2, 2);
+                        TreeNode tableNode = new TreeNode(node.Text+"."+item, 2, 2);
                         tableNode.Tag = node.Tag;
                         node.Nodes.Add(tableNode);
                     }
@@ -463,7 +464,11 @@ namespace FreesqlGenCode
                 {
                     FileInfo[] fileInfos = FileUtil.loadTemplates("");
                     TreeNode parentNode = node.Parent;
-                    string selTable = parentNode.Text + "." + node.Text;
+                    string selTable = node.Text;
+                    if (!node.Text.StartsWith(parentNode.Text + "."))
+                    {
+                        selTable = parentNode.Text + "." + node.Text;
+                    }
                     List<List<string>> listCols = dBConnect.GetColInfos(selTable);
                     control.Invoke(() =>
                     {
@@ -602,7 +607,7 @@ namespace FreesqlGenCode
                                 for (int i = 0; i < listTable.Count; i++)
                                 {
                                     TableInfo tableInfo = listTable[i];
-                                    ListViewItem viewItem = new ListViewItem(tableInfo.Name, 2);
+                                    ListViewItem viewItem = new ListViewItem(node.Text+"."+tableInfo.Name, 2);
                                     viewItem.SubItems.Add(tableInfo.Schema);
                                     viewItem.SubItems.Add(tableInfo.DbTableType);
                                     viewItem.SubItems.Add(tableInfo.Columns.ToString());
@@ -631,7 +636,7 @@ namespace FreesqlGenCode
                                     for (int i = 0; i < listTable.Count; i++)
                                     {
                                         TableInfo tableInfo = listTable[i];
-                                        ListViewItem viewItem = new ListViewItem(tableInfo.Name, 2);
+                                        ListViewItem viewItem = new ListViewItem(node.Text+"."+tableInfo.Name, 2);
                                         viewItem.SubItems.Add(tableInfo.Schema);
                                         viewItem.SubItems.Add(tableInfo.DbTableType);
                                         viewItem.SubItems.Add(tableInfo.Columns.ToString());
@@ -664,7 +669,7 @@ namespace FreesqlGenCode
                             for (int i = 0; i < listTable.Count; i++)
                             {
                                 TableInfo tableInfo = listTable[i];
-                                ListViewItem viewItem = new ListViewItem(tableInfo.Name, 2);
+                                ListViewItem viewItem = new ListViewItem(node.Parent.Text+tableInfo.Name, 2);
                                 viewItem.SubItems.Add(tableInfo.Schema);
                                 viewItem.SubItems.Add(tableInfo.DbTableType);
                                 viewItem.SubItems.Add(tableInfo.Columns.ToString());
@@ -692,7 +697,7 @@ namespace FreesqlGenCode
                                 for (int i = 0; i < listTable.Count; i++)
                                 {
                                     TableInfo tableInfo = listTable[i];
-                                    ListViewItem viewItem = new ListViewItem(tableInfo.Name, 2);
+                                    ListViewItem viewItem = new ListViewItem(node.Parent.Text+"."+tableInfo.Name, 2);
                                     viewItem.SubItems.Add(tableInfo.Schema);
                                     viewItem.SubItems.Add(tableInfo.DbTableType);
                                     viewItem.SubItems.Add(tableInfo.Columns.ToString());
@@ -748,7 +753,11 @@ namespace FreesqlGenCode
                 {
                     this.ShowLoadingAsync("正在加载数据...", (control) => {
                         FileInfo[] fileInfos = FileUtil.loadTemplates("");
-                        string selTable = node.Text + "." + item.Text;
+                        string selTable = item.Text;
+                        if (!item.Text.StartsWith(node.Text + "."))
+                        {
+                            selTable = node.Text + "." + item.Text;
+                        }
                         List<List<string>> listCols = dBConnect.GetColInfos(selTable);
                         control.Invoke(() => {
                             TabPageTag tag = new TabPageTag();
@@ -791,15 +800,22 @@ namespace FreesqlGenCode
             {
                 return;
             }
-
             openGenCodeSqlPage(node);
         }
 
-        private void openGenCodeSqlPage(TreeNode node)
+        private void openGenCodeSqlPage(TreeNode node,TreeNode? pNode = null)
         {
             FsDatabase fsDatabase = (FsDatabase)node.Tag;
             TreeNode parentNode = node.Parent;
-            string selTable = parentNode.Text + "." + node.Text;
+            if(parentNode == null)
+            {
+                parentNode = pNode;
+            }
+            string selTable = node.Text;
+            if (!node.Text.StartsWith(parentNode.Text + "."))
+            {
+                selTable = parentNode.Text + "." + node.Text;
+            }
             TabPageTag tag = new TabPageTag();
             tag.DBKey = fsDatabase.DBKey;
             tag.TableName = selTable;
@@ -820,26 +836,123 @@ namespace FreesqlGenCode
                 {
                     return;
                 }
-                //保存查询View记录
-                bllFsQueryView.Add(new FsQueryView() { 
-                    
-                });
-                FsShowTables fsShowTables = sender as FsShowTables;
-
-
+                int QueryViewId = (int)sender;
+                //删除所有节点
+                bllFsTableNode.DeleteReal(QueryViewId);
+                //重新添加所有节点
+                Dictionary<int, List<FsTableControl>> pairs = codeControl.fsShowTables1.GetDictNotes();
+                if (pairs.Count > 0)
+                {
+                    Dictionary<int,int> keyValues= new Dictionary<int,int>();
+                    for (int i = 0; i < pairs.Count; i++)
+                    {
+                        List<FsTableControl> fsTables = pairs[i];
+                        foreach(FsTableControl node in fsTables)
+                        {
+                            int ParentNodeId =0;
+                            if(node.PrevNode!= null)
+                            {
+                                keyValues.TryGetValue(node.PrevNode.TableId, out ParentNodeId);
+                            }
+                            FsLine fsLine = node.Tag as FsLine;
+                            int nodeId =  bllFsTableNode.Add(new FsTableNode() { 
+                                ParentId = ParentNodeId,
+                                NodeName = node.Text,
+                                TableName = fsLine.EndTable,
+                                TableNameAlias = fsLine.EndTableAlias,
+                                TableColumn = fsLine.EndColumn,
+                                ParentTableName = fsLine.StartTable,
+                                ParentTableNameAlias = fsLine.StartTableAlias,
+                                ParentTableColumn= fsLine.StartColumn,
+                                JoinType = (int)fsLine.JoinType,
+                                QueryViewId = QueryViewId,
+                                Col = node.Col,
+                                LocationX = node.Location.X,
+                                LocationY = node.Location.Y,
+                                QueryFields = string.Join(",", node.QueryFields.ToArray()),
+                                State = (int)EnumState.Normal
+                            });
+                            keyValues.Add(node.TableId,nodeId);
+                        }
+                    }
+                }
+                FsQueryView fsQueryView = bllFsQueryView.GetModel(QueryViewId);
+                MessageBox.Show("保存成功!");
             });
-
-            FsTableControl fsTable = new FsTableControl();
-            fsTable.Text = selTable;
-            fsTable.Col = 0;
-
-            codeControl.fsShowTables1.AddTableControl(fsTable);
+            codeControl.RefreshDataOfQueryViewListBoxEvent += new EventHandler((object? sender,EventArgs e) => {
+                MyGenCodeSqlControl myGenCodeSql = (MyGenCodeSqlControl)sender;
+                myGenCodeSql.queryViewListBox1.Items.Clear();
+                List<FsQueryView> fsQueries = bllFsQueryView.GetList(a=>a.State == (int)EnumState.Normal 
+                    && a.DBKey == fsDatabase.DBKey && a.DBName == parentNode.Text);
+                myGenCodeSql.queryViewListBox1.Items.AddRange(fsQueries.Select(a=>a.QueryName).ToArray());
+            });
+            codeControl.SelectedQueryItemEvent += new Func<string, int>((selectedItemText) =>
+            {
+                FsQueryView fsQuery = bllFsQueryView.GetModel(a => a.DBKey == fsDatabase.DBKey && a.DBName == parentNode.Text && a.QueryName == selectedItemText && a.State == (int)EnumState.Normal);
+                if(fsQuery != null)
+                {
+                    Task.Run(() =>
+                    {
+                        List<FsTableNode> lstNode = bllFsTableNode.GetList(a => a.QueryViewId == fsQuery.Id && a.State == (int)EnumState.Normal, null, " Col ASC ");
+                        if (lstNode.Count > 0)
+                        {
+                            codeControl.fsShowTables1.Invoke(() =>
+                            {
+                                codeControl.fsShowTables1.ClearNodes();
+                                foreach (var item in lstNode)
+                                {
+                                    codeControl.fsShowTables1.CreateTableComtrol(item);
+                                }
+                                codeControl.fsShowTables1.Invalidate();
+                            });
+                        }
+                    });
+                    return fsQuery.Id;
+                }
+                return 0;
+            });
+            codeControl.DelQueryViewEvent += new EventHandler((queryViewId, e) =>
+            {
+                FsQueryView fsQuery = bllFsQueryView.GetModel(a => a.Id == (int)queryViewId && a.State == (int)EnumState.Normal);
+                if (fsQuery != null)
+                {
+                    bllFsQueryView.Delete(fsQuery.Id);
+                    codeControl.queryViewListBox1.Items.Remove(fsQuery.QueryName);
+                    codeControl.fsShowTables1.ClearNodes();
+                }
+            });
+            if (pNode == null)
+            {
+                FsTableControl fsTable = new FsTableControl();
+                fsTable.Text = selTable;
+                fsTable.Col = 0;
+                codeControl.fsShowTables1.AddTableControl(fsTable);
+            }
             tabPage.Controls.Add(codeControl);
             tabPage.Text = selTable;
             tabPage.ToolTipText = selTable;
             tabPage.Tag = tag;
             tabControl1.TabPages.Add(tabPage);
             tabControl1.SelectedTab = tabPage;
+        }
+        /// <summary>
+        /// 查询生成
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void queryViewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TreeNode node = treeView1.SelectedNode;//数据库节点
+            if (node == null)
+            {
+                return;
+            }
+            FsDatabase fsDatabase = node.Tag as FsDatabase;
+            TreeNode parentNode = new TreeNode();
+            parentNode.Text = node.Text;
+            TreeNode treeNode = new TreeNode();
+            treeNode.Tag = fsDatabase;
+            openGenCodeSqlPage(treeNode,parentNode);
         }
     }
 

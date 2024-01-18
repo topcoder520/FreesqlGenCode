@@ -1,7 +1,9 @@
 ﻿using Dm;
+using Model;
 using MySqlX.XDevAPI.Relational;
 using System.ComponentModel;
 using System.Text;
+using System.Windows.Forms;
 
 namespace FreesqlGenCode.controls
 {
@@ -90,10 +92,26 @@ namespace FreesqlGenCode.controls
 
         private Dictionary<int, List<FsTableControl>> pairsTable = new Dictionary<int, List<FsTableControl>>();
 
+        public Dictionary<int, List<FsTableControl>> GetDictNotes()
+        {
+            return pairsTable;
+        }
+
+        public void ClearNodes()
+        {
+            this.Controls.Clear();
+            pairsTable.Clear();
+            fsLines.Clear();
+        }
+
         public FsTableControl GetFirstNode()
         {
-            List<FsTableControl> fsTables = pairsTable[0];
-            return fsTables.FirstOrDefault();
+            List<FsTableControl> fsTables;
+            if (pairsTable.TryGetValue(0,out fsTables))
+            {
+                return fsTables.FirstOrDefault();
+            }
+            return null;
         }
 
         public FsTableControl SelectedNote { get; set; }
@@ -109,6 +127,55 @@ namespace FreesqlGenCode.controls
         }
 
         private int TableId = 0;
+
+        /// <summary>
+        /// 创建一个节点
+        /// </summary>
+        /// <param name="fsLine"></param>
+        /// <returns></returns>
+        public void CreateTableComtrol(FsTableNode tableInfo)
+        {
+            FsLine fsLine = new FsLine()
+            {
+                StartTable = tableInfo.ParentTableName,
+                StartTableAlias = tableInfo.ParentTableNameAlias,
+                StartColumn = tableInfo.ParentTableColumn,
+                EndTable = tableInfo.TableName,
+                EndTableAlias = tableInfo.TableNameAlias,
+                EndColumn = tableInfo.TableColumn,
+                JoinType = (EnumJoinType)tableInfo.JoinType,
+            };
+
+            FsTableControl nextNode = new FsTableControl();
+            nextNode.Tag = fsLine;
+            nextNode.Text = tableInfo.TableName;
+            nextNode.Col = tableInfo.Col;
+            nextNode.TableId = tableInfo.Id;
+            if(tableInfo.QueryFields.Length> 0)
+            {
+                nextNode.QueryFields =  tableInfo.QueryFields.Split(',').ToList();
+            }
+            if(nextNode.Col <= 0)
+            {
+                nextNode.PrevNode = null;
+            }
+            else
+            {
+                List<FsTableControl> fsTableControls = pairsTable[tableInfo.Col - 1];
+                foreach (var item in fsTableControls)
+                {
+                    if(item.TableId == tableInfo.ParentId)
+                    {
+                        nextNode.PrevNode = item;
+                        nextNode.PrevNode.NextNodeList.Add(nextNode);
+                        break;
+                    }
+                }
+            }
+            fsLine.Node = nextNode;
+
+            AddTableControl(nextNode);
+        }
 
         public void AddTableControl(FsTableControl table)
         {

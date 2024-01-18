@@ -222,6 +222,8 @@ namespace FreesqlGenCode
 
         public event EventHandler RemoveNodeEvent;
 
+        public event EventHandler ChangedEventHandler;
+
         /// <summary>
         /// 保存
         /// </summary>
@@ -233,6 +235,7 @@ namespace FreesqlGenCode
             {
                 control.Invoke(() =>
                 {
+                    ChangedEventHandler?.Invoke(sender, e);
                     List<string> queryFields = new List<string>();
                     int cnt = dataGridView1.Rows.Count;
                     for (int i = 0; i < cnt; i++)
@@ -252,8 +255,9 @@ namespace FreesqlGenCode
                     saveTableAlias();
 
                     List<FsTableControl> nextNodes = fsTable.NextNodeList;
-                    foreach (FsTableControl node in nextNodes)
+                    for (int i = nextNodes.Count - 1; i >= 0; i--)
                     {
+                        FsTableControl node = nextNodes[i];
                         FsLine fsLine = node.Tag as FsLine;
                         if (fsLine.Flag == 0)
                         {
@@ -261,8 +265,9 @@ namespace FreesqlGenCode
                         }
                     }
                     List<FsTableControl> preNextNodes = fsTable.PreNextNodeList;
-                    foreach (FsTableControl node in preNextNodes)
+                    for (int i = preNextNodes.Count - 1; i >= 0; i--)
                     {
+                        FsTableControl node = preNextNodes[i];
                         FsLine fsLine = (FsLine)node.Tag;
                         if (fsLine.Flag == 1)
                         {

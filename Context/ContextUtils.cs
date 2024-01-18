@@ -16,15 +16,7 @@ namespace Context
         {
             IFreeSql fsql  = GetDataBase(enumDatabase,setConnectString);
             KeyValArgs keyValArgs = setConnectString();
-            string Key = string.Empty;
-            if (string.IsNullOrWhiteSpace(keyValArgs.Key))
-            {
-                Key = MD5Helper.EncryptString(keyValArgs.ConnectString);
-            }
-            else
-            {
-                Key = keyValArgs.Key;
-            }
+            string Key = keyValArgs.Key;
             keyValueDataBase.Add(Key,fsql);
             return fsql;
         }
@@ -104,11 +96,11 @@ namespace Context
             return true;
         }
 
-        public static DBConnect CreateConnectDB(EnumDatabase enumDatabase, string connectString)
+        public static DBConnect CreateConnectDB(EnumDatabase enumDatabase,string Key, string connectString)
         {
             try
             {
-                string Key = MD5Helper.EncryptString(connectString);
+                //string Key = MD5Helper.EncryptString(connectString);
                 IFreeSql? freeSql;
                 if(!keyValueDataBase.TryGetValue(Key, out freeSql))
                 {
