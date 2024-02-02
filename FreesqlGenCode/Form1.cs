@@ -3,6 +3,7 @@ using Common;
 using Context;
 using DataDefine;
 using FreesqlGenCode.controls;
+using FreesqlGenCode.DataConn;
 using Model;
 using System.IO;
 using System.Windows.Forms;
@@ -103,18 +104,40 @@ namespace FreesqlGenCode
             
             #endregion
         }
-
+        /// <summary>
+        /// 添加数据库
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void fsPictureBox1_FsClick(object sender, EventArgs e)
         {
             System.Diagnostics.Debug.WriteLine("FsClick");
             //MessageBox.Show("add Database");
-            Form CreateDataConnectForm = new FormCreateDataConnect();
-            DialogResult rs =  CreateDataConnectForm.ShowDialog();
-            if (rs == DialogResult.OK) { 
-                
-            }
-            InitTreeView("NotInit");
-            ClearTabPages("");
+            FormSelectDB formSelectDB = new FormSelectDB();
+            formSelectDB.SelectDBChanged += new EventHandler<EventArgs>((object? sender,EventArgs e) => {
+                formSelectDB.Close();
+                string dbType = sender as string;
+                if(dbType == "mysql")
+                {
+                    FormConnMysql connMysql = new FormConnMysql();
+                    connMysql.SaveDataHandler += new EventHandler((object? sender,EventArgs e) =>
+                    {
+                        InitTreeView("NotInit");
+                        ClearTabPages("");
+                    });
+                    connMysql.ShowDialog();
+                }else if(dbType == "sqlserver")
+                {
+                    FormConnSqlserver connSqlserver = new FormConnSqlserver();
+                    connSqlserver.SaveDataHandler += new EventHandler((object? sender, EventArgs e) =>
+                    {
+                        InitTreeView("NotInit");
+                        ClearTabPages("");
+                    });
+                    connSqlserver.ShowDialog();
+                }
+            });
+            formSelectDB.Show();
         }
         /// <summary>
         /// 删除连接
@@ -141,7 +164,8 @@ namespace FreesqlGenCode
             DialogResult rs =  MessageBox.Show("确认删除该连接吗?","提示", MessageBoxButtons.YesNo);
             if (rs == DialogResult.Yes)
             {
-                int cnt = bllFsDatabase.Delete(a => a.DatabaseName == selectNode.Text);
+                string connName = selectNode.Text.Substring(0,selectNode.Text.LastIndexOf('('));
+                int cnt = bllFsDatabase.Delete(a => a.DatabaseName == connName && a.State == (int)EnumState.Normal);
                 if (cnt > 0)
                 {
                     treeView1.Nodes.Remove(selectNode);

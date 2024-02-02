@@ -23,6 +23,8 @@ namespace FreesqlGenCode.controls
             iconRed = Properties.Resources.closeRed;
         }
 
+        
+
         private int yoffset = 8;
 
         protected override void OnDrawItem(DrawItemEventArgs e)

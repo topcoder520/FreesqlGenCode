@@ -37,12 +37,12 @@ namespace FreesqlGenCode.controls
         {
             int width = 8;
             int height = 8;
-            Pen pen = new Pen(Color.Red);
+            Pen pen = new Pen(Color.Red,2);
             Graphics g = e.Graphics;
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
             g.DrawLine(pen, _Start, _End);
             
             Brush bush = new SolidBrush(Color.Red);//填充的颜色
-            //g.DrawEllipse(pen, _Start.X, _Start.Y - height/2, width, height);
             g.FillEllipse(bush, _Start.X, _Start.Y - height / 2, width, height);
             g.DrawEllipse(pen,_End.X,_End.Y - height / 2, width,height);
             bush.Dispose();

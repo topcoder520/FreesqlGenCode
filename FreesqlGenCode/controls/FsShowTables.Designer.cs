@@ -99,9 +99,10 @@ namespace FreesqlGenCode.controls
 
         public void ClearNodes()
         {
-            this.Controls.Clear();
-            pairsTable.Clear();
             fsLines.Clear();
+            pairsTable.Clear();
+            this.Controls.Clear();
+            Invalidate();
         }
 
         public FsTableControl GetFirstNode()

@@ -62,7 +62,7 @@ namespace Context
 
         public static string GetMysqlConnectString(string host, string port, string username, string password)
         {
-            return $"Data Source={host};Port={port};User ID={username};Password={password}; Charset=utf8; SslMode=none;Min pool size=1";
+            return $"Data Source={host};Port={port};User ID={username};Password={password}; Charset=utf8;Min pool size=1";
         }
 
         public static TaskBuild CreateTaskBuild(string Key,params string[] DataBaseName)
