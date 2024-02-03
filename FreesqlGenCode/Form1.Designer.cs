@@ -419,12 +419,12 @@ namespace FreesqlGenCode
             this.listViewContextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.listViewToolStripMenuItem});
             this.listViewContextMenuStrip1.Name = "listViewContextMenuStrip1";
-            this.listViewContextMenuStrip1.Size = new System.Drawing.Size(241, 67);
+            this.listViewContextMenuStrip1.Size = new System.Drawing.Size(153, 34);
             // 
             // listViewToolStripMenuItem
             // 
             this.listViewToolStripMenuItem.Name = "listViewToolStripMenuItem";
-            this.listViewToolStripMenuItem.Size = new System.Drawing.Size(240, 30);
+            this.listViewToolStripMenuItem.Size = new System.Drawing.Size(152, 30);
             this.listViewToolStripMenuItem.Text = "代码生成";
             this.listViewToolStripMenuItem.Click += new System.EventHandler(this.listViewToolStripMenuItem_Click);
             // 

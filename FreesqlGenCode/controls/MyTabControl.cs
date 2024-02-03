@@ -13,6 +13,8 @@ namespace FreesqlGenCode.controls
         private Image icon = null;
         private Image iconRed = null;
 
+        private List<TabPage> tabPageStates = new List<TabPage>();
+
         public MyTabControl() :base() {
             this.DrawMode = TabDrawMode.OwnerDrawFixed;
 
@@ -37,7 +39,7 @@ namespace FreesqlGenCode.controls
             {
                 Brush selected_color = Brushes.White; //选中的项的背景色
                 g.FillRectangle(selected_color, r); //改变选项卡标签的背景色
-                g.DrawString(title, this.Font, new SolidBrush(Color.Black), new PointF(r.X, r.Y + 5));//PointF选项卡标题的位置
+                g.DrawString(title, this.Font, new SolidBrush(Color.Black), new PointF(r.X+4, r.Y + 5));//PointF选项卡标题的位置
                 r.Offset(r.Width - IconWOrH, yoffset);
                 g.DrawImage(iconRed, new Point(r.X, r.Y));//选项卡上的图标的位置 fntTab = new System.Drawing.Font(e.Font, FontStyle.Bold);
             }
@@ -66,10 +68,38 @@ namespace FreesqlGenCode.controls
                     MessageBox.Show("默认页不允许关闭");
                     return;
                 }
-                this.TabPages.RemoveAt(this.SelectedIndex);
-            } 
+                //先跳转到上一个page，再删除当前page
+                TabPage page = this.TabPages[this.SelectedIndex];
+                this.SelectedTab =  RemoveTabPageState(page);
+                this.TabPages.Remove(page);
+            }
+        }
+        private TabPage RemoveTabPageState(TabPage tabPage)
+        {
+            tabPageStates.Remove(tabPage);
+            if (tabPageStates.Count > 0)
+            {
+                return tabPageStates[tabPageStates.Count - 1];
+            }
+            return null;
         }
 
+
+        protected override void OnSelectedIndexChanged(EventArgs e)
+        {
+            base.OnSelectedIndexChanged(e);
+            AddTabPageState(this.TabPages[this.SelectedIndex]);
+        }
+
+
+        private void AddTabPageState(TabPage tabPage)
+        {
+            if (tabPageStates.Contains(tabPage))
+            {
+                tabPageStates.Remove(tabPage);
+            }
+            tabPageStates.Add(tabPage);
+        }
         private string handleString(string text,int maxLen)
         {
             int textLen = GetStringLength(text);
@@ -97,5 +127,7 @@ namespace FreesqlGenCode.controls
             Size size =  TextRenderer.MeasureText(text,f,new Size(0,0),TextFormatFlags.NoPadding);
             return size.Width + addLength;
         }
+
+
     }
 }

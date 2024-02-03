@@ -109,5 +109,22 @@ namespace FreesqlGenCode
         {
 
         }
+
+        private void copysqlbutton4_Click(object sender, EventArgs e)
+        {
+            this.richTextBox1.SelectAll();
+            this.richTextBox1.Copy();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            this.saveSqlFileDialog1.Filter = "SQL files (*.sql)|*.sql";
+            DialogResult rs =  this.saveSqlFileDialog1.ShowDialog();
+            if(rs == DialogResult.OK)
+            {
+                File.WriteAllText(this.saveSqlFileDialog1.FileName, this.richTextBox1.Text);
+                MessageBox.Show("保存成功!");
+            }
+        }
     }
 }

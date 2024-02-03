@@ -40,18 +40,35 @@ namespace FreesqlGenCode.DataConn
                 MessageBox.Show("输入主机");
                 return false;
             }
-            if (this.usernametextBox4.Text.Length == 0)
+            if(this.initDBtextBox1.Text.Length == 0)
             {
-                MessageBox.Show("输入用户名");
+                MessageBox.Show("输入初始数据库");
                 return false;
             }
-            if (this.passwordtextBox5.Text.Length == 0)
+            if(this.comboBox1.SelectedIndex == 0)
             {
-                MessageBox.Show("输入密码");
-                return false;
+                if (this.usernametextBox4.Text.Length == 0)
+                {
+                    MessageBox.Show("输入用户名");
+                    return false;
+                }
+                if (this.passwordtextBox5.Text.Length == 0)
+                {
+                    MessageBox.Show("输入密码");
+                    return false;
+                }
             }
             #endregion
-            string connectString = ContextUtils.GetMysqlConnectString(hosttextBox2.Text, "", usernametextBox4.Text, passwordtextBox5.Text);
+
+            string connectString = string.Empty;
+            if(this.comboBox1.SelectedIndex == 0)
+            {
+                connectString = ContextUtils.GetSqlserverConnectString(hosttextBox2.Text, usernametextBox4.Text, passwordtextBox5.Text, initDBtextBox1.Text);
+            }
+            else
+            {
+                connectString = ContextUtils.GetWindowsSqlserverConnectString(hosttextBox2.Text,initDBtextBox1.Text);
+            }
             if (typ == "save")
             {
                 //保存
@@ -60,7 +77,7 @@ namespace FreesqlGenCode.DataConn
                 {
                     DatabaseName = nametextBox1.Text,
                     ConnectString = connectString,
-                    DBType = EnumDatabase.Mysql.GetDescription(),
+                    DBType = EnumDatabase.Sqlserver.GetDescription(),
                     State = (int)EnumState.Normal
                 };
                 bllFsDatabase.Add(fsDatabase);
@@ -70,7 +87,7 @@ namespace FreesqlGenCode.DataConn
             {
                 //测试
                 string errMsg = "";
-                bool successDB = ContextUtils.TestConnectDB(DataDefine.EnumDatabase.Mysql, connectString, out errMsg);
+                bool successDB = ContextUtils.TestConnectDB(DataDefine.EnumDatabase.Sqlserver, connectString, out errMsg);
                 if (successDB)
                 {
                     MessageBox.Show("Success!");

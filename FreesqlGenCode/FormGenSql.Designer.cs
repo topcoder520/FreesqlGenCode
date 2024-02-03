@@ -34,10 +34,12 @@
             this.bottomPanel = new System.Windows.Forms.Panel();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.topPanel = new System.Windows.Forms.Panel();
+            this.copysqlbutton4 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.saveSqlFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -103,6 +105,7 @@
             // topPanel
             // 
             this.topPanel.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.topPanel.Controls.Add(this.copysqlbutton4);
             this.topPanel.Controls.Add(this.button3);
             this.topPanel.Controls.Add(this.button2);
             this.topPanel.Controls.Add(this.button1);
@@ -111,6 +114,42 @@
             this.topPanel.Name = "topPanel";
             this.topPanel.Size = new System.Drawing.Size(978, 42);
             this.topPanel.TabIndex = 1;
+            // 
+            // copysqlbutton4
+            // 
+            this.copysqlbutton4.Font = new System.Drawing.Font("Microsoft YaHei UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.copysqlbutton4.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.copysqlbutton4.Location = new System.Drawing.Point(566, 6);
+            this.copysqlbutton4.Name = "copysqlbutton4";
+            this.copysqlbutton4.Size = new System.Drawing.Size(86, 31);
+            this.copysqlbutton4.TabIndex = 3;
+            this.copysqlbutton4.Text = "复制SQL";
+            this.copysqlbutton4.UseVisualStyleBackColor = true;
+            this.copysqlbutton4.Click += new System.EventHandler(this.copysqlbutton4_Click);
+            // 
+            // button3
+            // 
+            this.button3.Font = new System.Drawing.Font("Microsoft YaHei UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.button3.ForeColor = System.Drawing.Color.Navy;
+            this.button3.Location = new System.Drawing.Point(668, 6);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(86, 31);
+            this.button3.TabIndex = 2;
+            this.button3.Text = "保存SQL";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // button2
+            // 
+            this.button2.BackColor = System.Drawing.Color.DeepSkyBlue;
+            this.button2.Font = new System.Drawing.Font("Microsoft YaHei UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.button2.ForeColor = System.Drawing.Color.DeepPink;
+            this.button2.Location = new System.Drawing.Point(881, 6);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(81, 31);
+            this.button2.TabIndex = 1;
+            this.button2.Text = "执行SQL";
+            this.button2.UseVisualStyleBackColor = false;
             // 
             // button1
             // 
@@ -133,29 +172,6 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "查询";
             this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // button2
-            // 
-            this.button2.BackColor = System.Drawing.Color.DeepSkyBlue;
-            this.button2.Font = new System.Drawing.Font("Microsoft YaHei UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.button2.ForeColor = System.Drawing.Color.DeepPink;
-            this.button2.Location = new System.Drawing.Point(881, 6);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(81, 31);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "执行SQL";
-            this.button2.UseVisualStyleBackColor = false;
-            // 
-            // button3
-            // 
-            this.button3.Font = new System.Drawing.Font("Microsoft YaHei UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.button3.ForeColor = System.Drawing.Color.Navy;
-            this.button3.Location = new System.Drawing.Point(668, 6);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(86, 31);
-            this.button3.TabIndex = 2;
-            this.button3.Text = "保存SQL";
-            this.button3.UseVisualStyleBackColor = true;
             // 
             // FormGenSql
             // 
@@ -187,5 +203,7 @@
         private Button button1;
         private Button button2;
         private Button button3;
+        private Button copysqlbutton4;
+        private SaveFileDialog saveSqlFileDialog1;
     }
 }

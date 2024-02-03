@@ -11,7 +11,6 @@ namespace Common
         public static FileInfo[] loadTemplates(string dirName)
         {
             string path = Path.Combine(Environment.CurrentDirectory, dirName);
-            string[] dir = Directory.GetDirectories(path);
             DirectoryInfo fdir = new DirectoryInfo(path);
             FileInfo[] files = fdir.GetFiles("*.cshtml");
             return files;

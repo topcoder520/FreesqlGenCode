@@ -135,7 +135,7 @@
             this.usernametextBox4.Name = "usernametextBox4";
             this.usernametextBox4.Size = new System.Drawing.Size(443, 30);
             this.usernametextBox4.TabIndex = 8;
-            this.usernametextBox4.Text = "root";
+            this.usernametextBox4.Text = "sa";
             // 
             // passwordtextBox5
             // 

@@ -63,10 +63,10 @@
             this.sqliteRadioButton2.AutoSize = true;
             this.sqliteRadioButton2.Location = new System.Drawing.Point(501, 112);
             this.sqliteRadioButton2.Name = "sqliteRadioButton2";
-            this.sqliteRadioButton2.Size = new System.Drawing.Size(84, 28);
+            this.sqliteRadioButton2.Size = new System.Drawing.Size(91, 28);
             this.sqliteRadioButton2.TabIndex = 2;
             this.sqliteRadioButton2.TabStop = true;
-            this.sqliteRadioButton2.Text = "Sqlite";
+            this.sqliteRadioButton2.Text = "SQLite";
             this.sqliteRadioButton2.UseVisualStyleBackColor = true;
             // 
             // owndefineRadioButton3

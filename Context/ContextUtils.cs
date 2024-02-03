@@ -65,6 +65,21 @@ namespace Context
             return $"Data Source={host};Port={port};User ID={username};Password={password}; Charset=utf8;Min pool size=1";
         }
 
+        public static string GetSqlserverConnectString(string host,string username,string password,string initDB)
+        {
+            return $"Data Source={host};User Id={username};Password={password};Initial Catalog={initDB};Encrypt=True;TrustServerCertificate=True;Pooling=true;Min Pool Size=1";
+        }
+
+        public static string GetSqliteConnectString(string path,string Password="")
+        {
+            return $"Data Source={path};Pooling=true;Min Pool Size=1";
+        }
+
+        public static string GetWindowsSqlserverConnectString(string host,string initDB)
+        {
+            return $"Data Source={host};Initial Catalog={initDB};Integrated Security=SSPI;Pooling=true;Min Pool Size=1";
+        }
+
         public static TaskBuild CreateTaskBuild(string Key,params string[] DataBaseName)
         {
             TaskBuild task = new TaskBuild();

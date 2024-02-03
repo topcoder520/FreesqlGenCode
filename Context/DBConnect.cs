@@ -64,7 +64,7 @@ namespace Context
         /// <returns></returns>
         public List<string> GetTableNamesBy(string database) {
             List<DbTableInfo> lst =  freeSql.DbFirst.GetTablesByDatabase(database);
-            List<string> tables = lst.Select(t => t.Name).ToList();
+            List<string> tables = lst.Select(t => string.IsNullOrWhiteSpace(t.Schema)? t.Name:(t.Schema+"."+t.Name)).ToList();
             return tables;
         }
 
@@ -75,7 +75,7 @@ namespace Context
             foreach (var item in lst)
             {
                 tables.Add(new TableInfo() { 
-                    Name = item.Name,
+                    Name = string.IsNullOrWhiteSpace(item.Schema) ? item.Name : (item.Schema + "." + item.Name),
                     Comment = item.Comment,
                     Schema = item.Schema,
                     DbTableType = item.Type.ToString(),

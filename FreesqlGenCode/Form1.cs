@@ -135,6 +135,24 @@ namespace FreesqlGenCode
                         ClearTabPages("");
                     });
                     connSqlserver.ShowDialog();
+                }else if(dbType == "sqlite")
+                {
+                    FormConnSqlite connSqlite = new FormConnSqlite();
+                    connSqlite.SaveDataHandler += new EventHandler((object? sender,EventArgs e) =>
+                    {
+                        InitTreeView("NotInit");
+                        ClearTabPages("");
+                    });
+                    connSqlite.ShowDialog();
+                }else if(dbType == "other")
+                {
+                    FormOwnDefine ownDefine = new FormOwnDefine();
+                    ownDefine.SaveDataHandler += new EventHandler((object? sender, EventArgs e) =>
+                    {
+                        InitTreeView("NotInit");
+                        ClearTabPages("");
+                    });
+                    ownDefine.ShowDialog();
                 }
             });
             formSelectDB.Show();
