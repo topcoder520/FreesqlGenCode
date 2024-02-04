@@ -2,6 +2,7 @@
 using Model;
 using MySqlX.XDevAPI.Relational;
 using System.ComponentModel;
+using System.Reflection.Emit;
 using System.Text;
 using System.Windows.Forms;
 
@@ -304,8 +305,18 @@ namespace FreesqlGenCode.controls
             }
         }
 
+        private List<string> TempQueryField;
+
         public string GetSql(FsTableControl firstNode)
         {
+            if(TempQueryField == null)
+            {
+                TempQueryField = new List<string>();
+            }
+            else
+            {
+                TempQueryField.Clear();
+            }
             StringBuilder selectBuilder = new StringBuilder();
             selectBuilder.AppendLine(" SELECT ");
             StringBuilder fieldBuilder = new StringBuilder();
@@ -319,7 +330,15 @@ namespace FreesqlGenCode.controls
                 for (int i = 0; i < firstNode.QueryFields.Count; i++)
                 {
                     string fieldName = firstNode.QueryFields[i];
-                    fieldBuilder.AppendLine("    "+tableName + "." + fieldName + ",");
+                    string str = GetSingleString(TempQueryField, fieldName);
+                    if(str == fieldName)
+                    {
+                        fieldBuilder.AppendLine("    " + tableName + "." + fieldName + ",");
+                    }
+                    else
+                    {
+                        fieldBuilder.AppendLine("    " + tableName + "." + fieldName +" as "+ str + ",");
+                    }
                 }
             }
             getsql(fieldBuilder,joinBuilder,firstNode);
@@ -354,7 +373,15 @@ namespace FreesqlGenCode.controls
                     for (int i = 0; i < node.QueryFields.Count; i++)
                     {
                         string fieldName = node.QueryFields[i];
-                        fields.AppendLine("    " + tableName + "." + fieldName + ",");
+                        string str = GetSingleString(TempQueryField, fieldName);
+                        if (str == fieldName)
+                        {
+                            fields.AppendLine("    " + tableName + "." + fieldName + ",");
+                        }
+                        else
+                        {
+                            fields.AppendLine("    " + tableName + "." + fieldName + " as " + str + ",");
+                        }
                     }
                 }
                 joinTables.AppendLine(" "+fsLine.ToString());
@@ -362,6 +389,46 @@ namespace FreesqlGenCode.controls
             }
         }
 
+        private string GetSingleString(List<string> lst,string item)
+        {
+            string tempItem = item;
+            int i = 1;
+            while (true)
+            {
+                if (lst.Contains(tempItem))
+                {
+                    tempItem = item + i;
+                    i++;
+                    continue;
+                }
+                break;
+            }
+            return tempItem;
+        }
+        /// <summary>
+        /// 获取节点及其所有子节点的查询字段
+        /// </summary>
+        /// <param name="lstQueryField"></param>
+        /// <param name="node"></param>
+        public void GetQueryFieldOfChildNodes(List<string> lstQueryField,FsTableControl node)
+        {
+            if(node.QueryFields.Count > 0)
+            {
+                foreach (var field in node.QueryFields)
+                {
+                    string str =  GetSingleString(lstQueryField, field);
+                    lstQueryField.Add(str);
+                }
+            }
+            if(node.NextNodeList.Count == 0)
+            {
+                return;
+            }
+            for (int i = 0; i < node.NextNodeList.Count; i++)
+            {
+                GetQueryFieldOfChildNodes(lstQueryField, node.NextNodeList[i]);
+            }
+        }
 
         #endregion
 

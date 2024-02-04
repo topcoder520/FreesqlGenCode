@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Context;
+using FreesqlGenCode.controls;
+using Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,6 +19,8 @@ namespace FreesqlGenCode
         {
             InitializeComponent();
         }
+
+        public List<string> lstQueryField { get; set; }
 
         protected override void OnLoad(EventArgs e)
         {
@@ -124,6 +129,61 @@ namespace FreesqlGenCode
             {
                 File.WriteAllText(this.saveSqlFileDialog1.FileName, this.richTextBox1.Text);
                 MessageBox.Show("保存成功!");
+            }
+        }
+        /// <summary>
+        /// 执行SQL
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void button2_Click(object sender, EventArgs e)
+        {
+            this.dataGridView1.Columns.Clear();
+            this.dataGridView1.Rows.Clear();
+            for (int i = 0; i < lstQueryField.Count; i++)
+            {
+                this.dataGridView1.Columns.Add(lstQueryField[i], lstQueryField[i]);
+            }
+            FsDatabase fsDatabase = (FsDatabase)this.Tag;
+            if(fsDatabase != null)
+            {
+                DBConnect dBConnect =  ContextUtils.GetDBConnect(fsDatabase.DBKey);
+                if(dBConnect.TestConnect())
+                {
+                    string sql = richTextBox1.Text;
+                    await this.ShowLoadingAsync("正在执行SQL...", (control) =>
+                    {
+                        DataTable dt = dBConnect.ExeQueryBySQL(sql);
+                        control.Invoke(() =>
+                        {
+                            if (dt != null)
+                            {
+                                if (lstQueryField.Count == 0)
+                                {
+                                    for (int i = 0; i < dt.Columns.Count; i++)
+                                    {
+                                        dataGridView1.Columns.Add(dt.Columns[i].ColumnName, dt.Columns[i].ColumnName);
+                                    }
+                                }
+                                for (int i = 0; i < dataGridView1.Columns.Count; i++)
+                                {
+                                    dataGridView1.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
+                                }
+                                for (int i = 0; i < dt.Rows.Count; i++)
+                                {
+                                    object[] arr = dt.Rows[i].ItemArray.Select(a=> a is int? a+"":a).ToArray();
+                                    dataGridView1.Rows.Add(dt.Rows[i].ItemArray);
+                                }
+                            }
+                        });
+                        return Task.CompletedTask;
+                    });
+                    tabControl1.SelectedTab = tabPage2;
+                }
+                else
+                {
+                    MessageBox.Show(dBConnect.GetException());
+                }
             }
         }
     }

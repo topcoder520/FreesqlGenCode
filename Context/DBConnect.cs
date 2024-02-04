@@ -2,6 +2,7 @@
 using MySqlX.XDevAPI;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,9 +38,7 @@ namespace Context
             }
             try
             {
-                List<string> lst = freeSql.DbFirst.GetDatabases();
-                Common.Console.Log("Success! Tables > "+string.Join(",",lst));
-                return true;
+               return freeSql.Ado.ExecuteConnectTest();
             }
             catch (Exception e)
             {
@@ -149,6 +148,11 @@ namespace Context
                 lists.Add(strings);
             }
             return lists;
+        }
+
+        public DataTable ExeQueryBySQL(string sql,object parms = null)
+        {
+            return freeSql.Ado.ExecuteDataTable(sql,parms);
         }
     }
 }

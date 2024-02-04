@@ -39,12 +39,20 @@
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.queryResultpanel2 = new System.Windows.Forms.Panel();
+            this.centerpanel3 = new System.Windows.Forms.Panel();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.toppanel2 = new System.Windows.Forms.Panel();
             this.saveSqlFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.bottomPanel.SuspendLayout();
             this.topPanel.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            this.queryResultpanel2.SuspendLayout();
+            this.centerpanel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -150,6 +158,7 @@
             this.button2.TabIndex = 1;
             this.button2.Text = "执行SQL";
             this.button2.UseVisualStyleBackColor = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // button1
             // 
@@ -165,13 +174,53 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.queryResultpanel2);
             this.tabPage2.Location = new System.Drawing.Point(4, 33);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(984, 567);
             this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "查询";
+            this.tabPage2.Text = "SQL查询结果";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // queryResultpanel2
+            // 
+            this.queryResultpanel2.Controls.Add(this.centerpanel3);
+            this.queryResultpanel2.Controls.Add(this.toppanel2);
+            this.queryResultpanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.queryResultpanel2.Location = new System.Drawing.Point(3, 3);
+            this.queryResultpanel2.Name = "queryResultpanel2";
+            this.queryResultpanel2.Size = new System.Drawing.Size(978, 561);
+            this.queryResultpanel2.TabIndex = 0;
+            // 
+            // centerpanel3
+            // 
+            this.centerpanel3.Controls.Add(this.dataGridView1);
+            this.centerpanel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.centerpanel3.Location = new System.Drawing.Point(0, 46);
+            this.centerpanel3.Name = "centerpanel3";
+            this.centerpanel3.Size = new System.Drawing.Size(978, 515);
+            this.centerpanel3.TabIndex = 1;
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.RowHeadersWidth = 62;
+            this.dataGridView1.RowTemplate.Height = 32;
+            this.dataGridView1.Size = new System.Drawing.Size(978, 515);
+            this.dataGridView1.TabIndex = 0;
+            // 
+            // toppanel2
+            // 
+            this.toppanel2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.toppanel2.Location = new System.Drawing.Point(0, 0);
+            this.toppanel2.Name = "toppanel2";
+            this.toppanel2.Size = new System.Drawing.Size(978, 46);
+            this.toppanel2.TabIndex = 0;
             // 
             // FormGenSql
             // 
@@ -187,6 +236,10 @@
             this.tabPage1.ResumeLayout(false);
             this.bottomPanel.ResumeLayout(false);
             this.topPanel.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
+            this.queryResultpanel2.ResumeLayout(false);
+            this.centerpanel3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -205,5 +258,9 @@
         private Button button3;
         private Button copysqlbutton4;
         private SaveFileDialog saveSqlFileDialog1;
+        private Panel queryResultpanel2;
+        private Panel centerpanel3;
+        private Panel toppanel2;
+        private DataGridView dataGridView1;
     }
 }

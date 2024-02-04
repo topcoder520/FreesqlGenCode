@@ -87,9 +87,18 @@ namespace FreesqlGenCode.controls
                 return;
             }
             string sql = fsShowTables.GetSql(firstTableNode);
+            //找出所有查询的字段
+            List<string> lstQueryField = new List<string>();
+            fsShowTables.GetQueryFieldOfChildNodes(lstQueryField,firstTableNode);
+
+            TreeNode node = fsShowTables.Tag as TreeNode;
+            FsDatabase fsDatabase = (FsDatabase)node.Tag;
+
             FormGenSql genSql = new FormGenSql();
             genSql.Text = "生成SQL";
             genSql.richTextBox1.Text = sql;
+            genSql.lstQueryField = lstQueryField;
+            genSql.Tag = fsDatabase;
             genSql.Show();
 
         }
