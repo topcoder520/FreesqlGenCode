@@ -1,4 +1,5 @@
-﻿using FreeSql.DatabaseModel;
+﻿using DataDefine;
+using FreeSql.DatabaseModel;
 using MySqlX.XDevAPI;
 using System;
 using System.Collections.Generic;
@@ -15,8 +16,13 @@ namespace Context
 
         private Exception? error { get; set; }
 
-        public DBConnect(IFreeSql? freeSql) {
+        private EnumDatabase _dataType { get; set; }
+
+        public EnumDatabase DataType { get { return _dataType; } }
+
+        public DBConnect(IFreeSql? freeSql,EnumDatabase dataType) {
             this.freeSql = freeSql;
+            _dataType = dataType;
         }
 
         public DBConnect(IFreeSql? freeSql,Exception? e)
@@ -152,7 +158,19 @@ namespace Context
 
         public DataTable ExeQueryBySQL(string sql,object parms = null)
         {
-            return freeSql.Ado.ExecuteDataTable(sql,parms);
+            //限制最多一千条数据
+            string limitSql = string.Empty;
+            if(_dataType == EnumDatabase.Mysql || _dataType == EnumDatabase.SqlLite)
+            {
+                limitSql = $"SELECT * FROM ({sql}) a LIMIT 1000";
+            }else if(_dataType == EnumDatabase.Sqlserver)
+            {
+                limitSql = $"SELECT TOP 1000 * FROM ({sql}) a";
+            }
+            return freeSql.Ado.ExecuteDataTable(limitSql, parms);
         }
+
+
+
     }
 }

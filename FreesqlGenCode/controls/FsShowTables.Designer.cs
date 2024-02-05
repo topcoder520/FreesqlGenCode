@@ -1,4 +1,5 @@
-﻿using Dm;
+﻿using DataDefine;
+using Dm;
 using Model;
 using MySqlX.XDevAPI.Relational;
 using System.ComponentModel;
@@ -307,7 +308,7 @@ namespace FreesqlGenCode.controls
 
         private List<string> TempQueryField;
 
-        public string GetSql(FsTableControl firstNode)
+        public string GetSql(FsTableControl firstNode,EnumDatabase enumDatabase)
         {
             if(TempQueryField == null)
             {
@@ -327,6 +328,10 @@ namespace FreesqlGenCode.controls
             if (firstNode.QueryFields.Count > 0)
             {
                 string tableName = fsLine.GetEndTableName();
+                if (enumDatabase == EnumDatabase.SqlLite && tableName.Contains("."))
+                {
+                    tableName = tableName.Substring(tableName.LastIndexOf(".")+1);
+                }
                 for (int i = 0; i < firstNode.QueryFields.Count; i++)
                 {
                     string fieldName = firstNode.QueryFields[i];
@@ -341,10 +346,15 @@ namespace FreesqlGenCode.controls
                     }
                 }
             }
-            getsql(fieldBuilder,joinBuilder,firstNode);
+            getsql(fieldBuilder,joinBuilder,firstNode,enumDatabase);
             if(fieldBuilder.Length == 0)
             {
-                fieldBuilder.AppendLine("    "+fsLine.GetEndTableName()+".*");
+                string tableName = fsLine.GetEndTableName();
+                if (enumDatabase == EnumDatabase.SqlLite && tableName.Contains("."))
+                {
+                    tableName = tableName.Substring(tableName.LastIndexOf(".") + 1);
+                }
+                fieldBuilder.AppendLine("    "+tableName+".*");
                 selectBuilder.Append(fieldBuilder)
                          .Append(joinBuilder);
             }
@@ -358,7 +368,7 @@ namespace FreesqlGenCode.controls
             return selectBuilder.ToString();
         }
 
-        private void getsql(StringBuilder fields,StringBuilder joinTables,FsTableControl parentNode)
+        private void getsql(StringBuilder fields,StringBuilder joinTables,FsTableControl parentNode,EnumDatabase enumDatabase)
         {
             if (parentNode.NextNodeList.Count == 0)
             {
@@ -370,6 +380,10 @@ namespace FreesqlGenCode.controls
                 if (node.QueryFields.Count > 0)
                 {
                     string tableName = fsLine.GetEndTableName();
+                    if (enumDatabase == EnumDatabase.SqlLite && tableName.Contains("."))
+                    {
+                        tableName = tableName.Substring(tableName.LastIndexOf(".") + 1);
+                    }
                     for (int i = 0; i < node.QueryFields.Count; i++)
                     {
                         string fieldName = node.QueryFields[i];
@@ -385,7 +399,7 @@ namespace FreesqlGenCode.controls
                     }
                 }
                 joinTables.AppendLine(" "+fsLine.ToString());
-                getsql(fields,joinTables,node);
+                getsql(fields,joinTables,node,enumDatabase);
             }
         }
 

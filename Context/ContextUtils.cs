@@ -111,11 +111,12 @@ namespace Context
             return true;
         }
 
+        private static Dictionary<string, EnumDatabase> kvEnum = new Dictionary<string, EnumDatabase>();
+
         public static DBConnect CreateConnectDB(EnumDatabase enumDatabase,string Key, string connectString)
         {
             try
             {
-                //string Key = MD5Helper.EncryptString(connectString);
                 IFreeSql? freeSql;
                 if(!keyValueDataBase.TryGetValue(Key, out freeSql))
                 {
@@ -124,7 +125,8 @@ namespace Context
                         return new KeyValArgs(Key, connectString);
                     });
                 }
-                return new DBConnect(freeSql);
+                kvEnum.Add(Key,enumDatabase);
+                return new DBConnect(freeSql,enumDatabase);
             }
             catch (Exception e)
             {
@@ -137,7 +139,8 @@ namespace Context
             IFreeSql? freeSql;
             if (keyValueDataBase.TryGetValue(Key, out freeSql))
             {
-                return new DBConnect(freeSql);
+                EnumDatabase enumDatabase =  kvEnum[Key];
+                return new DBConnect(freeSql,enumDatabase);
             }
             return null;
         }

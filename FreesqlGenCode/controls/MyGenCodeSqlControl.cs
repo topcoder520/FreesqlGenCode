@@ -1,4 +1,5 @@
-﻿using Model;
+﻿using Context;
+using Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -86,13 +87,20 @@ namespace FreesqlGenCode.controls
                 MessageBox.Show("请添加节点");
                 return;
             }
-            string sql = fsShowTables.GetSql(firstTableNode);
+            
             //找出所有查询的字段
             List<string> lstQueryField = new List<string>();
             fsShowTables.GetQueryFieldOfChildNodes(lstQueryField,firstTableNode);
 
             TreeNode node = fsShowTables.Tag as TreeNode;
             FsDatabase fsDatabase = (FsDatabase)node.Tag;
+            DBConnect dBConnect = ContextUtils.GetDBConnect(fsDatabase.DBKey);
+            if (!dBConnect.TestConnect())
+            {
+                MessageBox.Show("数据库连接无效!");
+                return;
+            }
+            string sql = fsShowTables.GetSql(firstTableNode,dBConnect.DataType);
 
             FormGenSql genSql = new FormGenSql();
             genSql.Text = "生成SQL";
