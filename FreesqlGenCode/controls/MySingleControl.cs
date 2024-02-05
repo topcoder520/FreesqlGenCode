@@ -15,6 +15,8 @@ namespace FreesqlGenCode.controls
         public MySingleControl() {
             InitializeComponent();
             InitTemplateComboBox();
+            this.modelRichTextBox1.LanguageOption = RichTextBoxLanguageOptions.UIFonts;
+            this.genCodeRichTextBox1.LanguageOption = RichTextBoxLanguageOptions.UIFonts;
         }
 
         private void InitTemplateComboBox()

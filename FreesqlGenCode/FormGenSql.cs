@@ -18,6 +18,8 @@ namespace FreesqlGenCode
         public FormGenSql()
         {
             InitializeComponent();
+            //解决中英文输入字体不一样问题
+            this.richTextBox1.LanguageOption = RichTextBoxLanguageOptions.UIFonts; 
         }
 
         public List<string> lstQueryField { get; set; }
@@ -37,7 +39,7 @@ namespace FreesqlGenCode
                 " outer "," GROUP "," group "," BY "," by "," HAVING "," having "," IN "," in ",
                 " inner "," INNER "," IS "," is "," NULL "," null "," NOT "," not "," LIKE "," like ",
                 " limit "," LIMIT "," OR "," or "," order "," ORDER "," right "," RIGHT "," ROWNUM ",
-                "rownum "," TOP "," top "," UNION "," union "," ALL "," all "," VIEW "," view ",
+                " rownum "," TOP "," top "," UNION "," union "," ALL "," all "," VIEW "," view ",
                 };
 
         public async void SetKeyWorlds()
@@ -45,8 +47,6 @@ namespace FreesqlGenCode
             await Task.Run(() =>
             {
                 //查询关键字
-                keyWorlds.Append(keyWorlds[0]);
-
                 for (int i = 0; i < keyWorlds.Length; i++)
                 {
                     SetColor(keyWorlds[i], Color.Blue);
@@ -105,15 +105,6 @@ namespace FreesqlGenCode
             //SetBackColor(selectedText,Color.Gray);
             //Common.Console.Log("selection changed:"+ selectedText);
         }
-        /// <summary>
-        /// 过滤条件
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void button1_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private void copysqlbutton4_Click(object sender, EventArgs e)
         {
@@ -153,29 +144,36 @@ namespace FreesqlGenCode
                     string sql = richTextBox1.Text;
                     await this.ShowLoadingAsync("正在执行SQL...", (control) =>
                     {
-                        DataTable dt = dBConnect.ExeQueryBySQL(sql);
-                        control.Invoke(() =>
+                        try
                         {
-                            if (dt != null)
+                            DataTable dt = dBConnect.ExeQueryBySQL(sql);
+                            control.Invoke(() =>
                             {
-                                if (lstQueryField.Count == 0)
+                                if (dt != null)
                                 {
-                                    for (int i = 0; i < dt.Columns.Count; i++)
+                                    if (lstQueryField.Count == 0)
                                     {
-                                        dataGridView1.Columns.Add(dt.Columns[i].ColumnName, dt.Columns[i].ColumnName);
+                                        for (int i = 0; i < dt.Columns.Count; i++)
+                                        {
+                                            dataGridView1.Columns.Add(dt.Columns[i].ColumnName, dt.Columns[i].ColumnName);
+                                        }
+                                    }
+                                    for (int i = 0; i < dataGridView1.Columns.Count; i++)
+                                    {
+                                        dataGridView1.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
+                                    }
+                                    for (int i = 0; i < dt.Rows.Count; i++)
+                                    {
+                                        object[] arr = dt.Rows[i].ItemArray.Select(a => a is int ? a + "" : a).ToArray();
+                                        dataGridView1.Rows.Add(dt.Rows[i].ItemArray);
                                     }
                                 }
-                                for (int i = 0; i < dataGridView1.Columns.Count; i++)
-                                {
-                                    dataGridView1.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
-                                }
-                                for (int i = 0; i < dt.Rows.Count; i++)
-                                {
-                                    object[] arr = dt.Rows[i].ItemArray.Select(a=> a is int? a+"":a).ToArray();
-                                    dataGridView1.Rows.Add(dt.Rows[i].ItemArray);
-                                }
-                            }
-                        });
+                            });
+                        }
+                        catch (Exception e)
+                        {
+                            MessageBox.Show(e.ToString());
+                        }
                         return Task.CompletedTask;
                     });
                     tabControl1.SelectedTab = tabPage2;
@@ -185,6 +183,104 @@ namespace FreesqlGenCode
                     MessageBox.Show(dBConnect.GetException());
                 }
             }
+        }
+
+        private void richTextBox1_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            if(e.KeyData == Keys.Tab)
+            {
+                //MessageBox.Show("tab");
+                // e.IsInputKey = true;
+
+            }
+            if (e.KeyData ==( Keys.Tab | Keys.Shift ))
+            {
+                //MessageBox.Show("tab");
+                // e.IsInputKey = true;
+
+            }
+        }
+
+        private void richTextBox1_Click(object sender, EventArgs e)
+        {
+           // Common.Console.Log("SelectionStart " + richTextBox1.SelectionStart);
+        }
+        /// <summary>
+        /// 检查输入的单词是否是sql关键字
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        {
+            int selectionStart = richTextBox1.SelectionStart;
+            StringBuilder strRightBuild = new StringBuilder();
+            int max = 20;
+            //右边
+            int rightPosition = selectionStart;
+            if (selectionStart <= richTextBox1.TextLength)
+            {
+                int i = 0;
+                while (max > i)
+                {
+                    if(selectionStart + i >= richTextBox1.TextLength)
+                    {
+                        break;
+                    }
+                    char str = richTextBox1.Text[selectionStart+i];
+                    if (char.IsWhiteSpace(str))
+                    {
+                        break;
+                    }
+                    strRightBuild.Append(str);
+                    i++;
+                    rightPosition++;
+                }
+            }
+            //左边
+            int leftPosition = selectionStart;
+            StringBuilder strLeftBuild = new StringBuilder();
+            if (selectionStart >= 0)
+            {
+                int i = 0;
+                while(max > i)
+                {
+                    if(selectionStart - i <= 0)
+                    {
+                        break;
+                    }
+                    char str = richTextBox1.Text[selectionStart-i-1];
+                    if (char.IsWhiteSpace(str))
+                    {
+                        break;
+                    }
+                    strLeftBuild.Append(str);
+                    i++;
+                    leftPosition--;
+                }
+            }
+            string strLeft = string.Empty;
+            if(strLeftBuild.Length > 0)
+            {
+                char[] arrChar = strLeftBuild.ToString().ToCharArray();
+                Array.Reverse(arrChar);
+                strLeft = new string(arrChar);
+            }
+            if(strRightBuild.Length > 0)
+            {
+                strLeft += strRightBuild.ToString();
+            }
+            Common.Console.Log(strLeft);
+            if(keyWorlds.Contains(" " + strLeft + " "))
+            {
+                richTextBox1.Select(leftPosition, strLeft.Length);
+                richTextBox1.SelectionColor = Color.Blue;
+            }
+            else
+            {
+                richTextBox1.Select(leftPosition, strLeft.Length);
+                richTextBox1.SelectionColor = richTextBox1.ForeColor;
+            }
+            richTextBox1.Select(selectionStart, 0);
         }
     }
 }

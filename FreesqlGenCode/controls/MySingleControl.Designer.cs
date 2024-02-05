@@ -270,6 +270,8 @@ namespace FreesqlGenCode.controls
             // 
             // dataGridViewTop1
             // 
+            this.dataGridViewTop1.AllowUserToAddRows = false;
+            this.dataGridViewTop1.AllowUserToDeleteRows = false;
             this.dataGridViewTop1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewTop1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ColName,
