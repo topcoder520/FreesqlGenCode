@@ -8,6 +8,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -30,7 +31,7 @@ namespace FreesqlGenCode
             SetKeyWorlds();
         }
 
-       private static  string[] keyWorlds = new string[] {
+       private static  string[] keyWords = new string[] {
                 " SELECT "," select "," FROM "," from "," ON "," on "," LEFT JOIN "," left join ",
                 " WHERE "," where "," AS "," as "," AND "," and "," ANY "," any "," ASC "," asc ",
                 " BETWEEN "," between "," CASE "," case "," CHECK "," check "," DEFAULT "," default ",
@@ -41,15 +42,16 @@ namespace FreesqlGenCode
                 " limit "," LIMIT "," OR "," or "," order "," ORDER "," right "," RIGHT "," ROWNUM ",
                 " rownum "," TOP "," top "," UNION "," union "," ALL "," all "," VIEW "," view ",
                 };
+        private static string[] keyWordsNotSpace = keyWords.Select(a=>a.Trim()).ToArray();
 
         public async void SetKeyWorlds()
         {
             await Task.Run(() =>
             {
                 //查询关键字
-                for (int i = 0; i < keyWorlds.Length; i++)
+                for (int i = 0; i < keyWords.Length; i++)
                 {
-                    SetColor(keyWorlds[i], Color.Blue);
+                    SetColor(keyWords[i], Color.Blue);
                 }
             });
         }
@@ -142,6 +144,8 @@ namespace FreesqlGenCode
                 if(dBConnect.TestConnect())
                 {
                     string sql = richTextBox1.Text;
+                    //去掉注释
+                    sql = HandlerSQL(sql);
                     await this.ShowLoadingAsync("正在执行SQL...", (control) =>
                     {
                         try
@@ -167,6 +171,7 @@ namespace FreesqlGenCode
                                         object[] arr = dt.Rows[i].ItemArray.Select(a => a is int ? a + "" : a).ToArray();
                                         dataGridView1.Rows.Add(dt.Rows[i].ItemArray);
                                     }
+                                    tabControl1.SelectedTab = tabPage2;
                                 }
                             });
                         }
@@ -176,12 +181,55 @@ namespace FreesqlGenCode
                         }
                         return Task.CompletedTask;
                     });
-                    tabControl1.SelectedTab = tabPage2;
                 }
                 else
                 {
                     MessageBox.Show(dBConnect.GetException());
                 }
+            }
+        }
+
+        private string HandlerSQL(string sql)
+        {
+            if(string.IsNullOrWhiteSpace(sql))
+            {
+                return "";
+            }
+            //去除注释
+            string pattern = "#((.+)(\n){0,}){0,1}"; //找出sql中的注释 # "
+
+            sql =  Regex.Replace(sql,pattern,"");
+            return sql;
+        }
+
+        public void SetLineColor(string lineText,int lineFirstCharIndex)
+        {
+            if (string.IsNullOrWhiteSpace(lineText))
+            {
+                return;
+            }
+            
+            if(lineText.IndexOf('#') != -1)
+            {
+                if (lineText.Trim().IndexOf('#') == 0)
+                {
+                    richTextBox1.Select(lineFirstCharIndex, lineText.Length);
+                    richTextBox1.SelectionColor = Color.Gray;
+                }
+                else
+                {
+                    int index = lineText.IndexOf('#');
+                    richTextBox1.Select(lineFirstCharIndex, index);
+                    richTextBox1.SelectionColor = Color.Black;
+                    int len = lineText.Substring(index).Length;
+                    richTextBox1.Select(lineFirstCharIndex+ index, len);
+                    richTextBox1.SelectionColor = Color.Gray;
+                }   
+            }
+            else
+            {
+                richTextBox1.Select(lineFirstCharIndex,lineText.Length);
+                richTextBox1.SelectionColor = Color.Black;
             }
         }
 
@@ -205,6 +253,7 @@ namespace FreesqlGenCode
         {
            // Common.Console.Log("SelectionStart " + richTextBox1.SelectionStart);
         }
+
         /// <summary>
         /// 检查输入的单词是否是sql关键字
         /// </summary>
@@ -213,20 +262,74 @@ namespace FreesqlGenCode
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
             int selectionStart = richTextBox1.SelectionStart;
+            
+            int lineIndex = richTextBox1.GetLineFromCharIndex(selectionStart);
+            int lineFirstCharIndex = richTextBox1.GetFirstCharIndexFromLine(lineIndex);
+            int lineEndCharIndex = selectionStart;
+            while(lineEndCharIndex<richTextBox1.TextLength)
+            {
+                if (richTextBox1.Text[lineEndCharIndex] == '\n')
+                {
+                    break;
+                }
+                lineEndCharIndex++;
+            }
+            string lineText = richTextBox1.Text.Substring(lineFirstCharIndex, lineEndCharIndex - lineFirstCharIndex);
+            Common.Console.Log("行: "+ lineText);
+            SetLineColor(lineText, lineFirstCharIndex);
+            lineText = HandlerSQL(lineText);
+            if (string.IsNullOrWhiteSpace(lineText))
+            {
+                richTextBox1.Select(selectionStart, 0);
+                return;
+            }
+            string pattern = " {0,}[A-Za-z]* {1,}"; //关键字匹配
+            MatchCollection keyWordsMatch = Regex.Matches(lineText,pattern);
+            for (int i = 0; i < keyWordsMatch.Count; i++)
+            {
+                string keyWord = keyWordsMatch[i].Value;
+                int Index = keyWordsMatch[i].Index;
+                int keyWordLeftIndex = lineFirstCharIndex + Index;
+                if (keyWordsNotSpace.Contains(keyWord.Trim()))
+                {
+                    if (keyWordLeftIndex > 0)
+                    {
+                        if (!char.IsWhiteSpace(richTextBox1.Text[keyWordLeftIndex]))
+                        {
+                            if (lineFirstCharIndex<(keyWordLeftIndex - 1) && !char.IsWhiteSpace(richTextBox1.Text[keyWordLeftIndex-1]))
+                            {
+                                continue;
+                            }
+                        }
+                    }
+                    richTextBox1.Select(keyWordLeftIndex, keyWord.Length);
+                    richTextBox1.SelectionColor = Color.Blue;
+                }
+                else
+                {
+                    richTextBox1.Select(keyWordLeftIndex, keyWord.Length);
+                    richTextBox1.SelectionColor = Color.Black;
+                }
+            }
+            //在注释里的关键字不用高亮
+            if (selectionStart > (lineFirstCharIndex + lineText.Length))
+            {
+                richTextBox1.Select(selectionStart, 0);
+                return;
+            }
             StringBuilder strRightBuild = new StringBuilder();
-            int max = 20;
             //右边
             int rightPosition = selectionStart;
-            if (selectionStart <= richTextBox1.TextLength)
+            if (selectionStart < lineFirstCharIndex+lineText.Length)
             {
                 int i = 0;
-                while (max > i)
+                while (true)
                 {
-                    if(selectionStart + i >= richTextBox1.TextLength)
+                    if (selectionStart + i >= lineFirstCharIndex+lineText.Length)
                     {
                         break;
                     }
-                    char str = richTextBox1.Text[selectionStart+i];
+                    char str = richTextBox1.Text[selectionStart + i];
                     if (char.IsWhiteSpace(str))
                     {
                         break;
@@ -236,19 +339,19 @@ namespace FreesqlGenCode
                     rightPosition++;
                 }
             }
-            //左边
+            ////左边
             int leftPosition = selectionStart;
             StringBuilder strLeftBuild = new StringBuilder();
-            if (selectionStart >= 0)
+            if (selectionStart >= 0 && selectionStart>lineFirstCharIndex)
             {
                 int i = 0;
-                while(max > i)
+                while (true)
                 {
-                    if(selectionStart - i <= 0)
+                    if (selectionStart - i <= 0)
                     {
                         break;
                     }
-                    char str = richTextBox1.Text[selectionStart-i-1];
+                    char str = richTextBox1.Text[selectionStart - i - 1];
                     if (char.IsWhiteSpace(str))
                     {
                         break;
@@ -259,18 +362,18 @@ namespace FreesqlGenCode
                 }
             }
             string strLeft = string.Empty;
-            if(strLeftBuild.Length > 0)
+            if (strLeftBuild.Length > 0)
             {
                 char[] arrChar = strLeftBuild.ToString().ToCharArray();
                 Array.Reverse(arrChar);
                 strLeft = new string(arrChar);
             }
-            if(strRightBuild.Length > 0)
+            if (strRightBuild.Length > 0)
             {
                 strLeft += strRightBuild.ToString();
             }
             Common.Console.Log(strLeft);
-            if(keyWorlds.Contains(" " + strLeft + " "))
+            if (keyWordsNotSpace.Contains(strLeft))
             {
                 richTextBox1.Select(leftPosition, strLeft.Length);
                 richTextBox1.SelectionColor = Color.Blue;
