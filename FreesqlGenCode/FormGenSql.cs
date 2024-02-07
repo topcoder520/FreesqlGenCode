@@ -189,6 +189,8 @@ namespace FreesqlGenCode
             }
         }
 
+        private static string remarkPattern = "#((.+)(\n){0,}){0,1}"; //找出sql中的注释 # "
+
         private string HandlerSQL(string sql)
         {
             if(string.IsNullOrWhiteSpace(sql))
@@ -196,12 +198,36 @@ namespace FreesqlGenCode
                 return "";
             }
             //去除注释
-            string pattern = "#((.+)(\n){0,}){0,1}"; //找出sql中的注释 # "
-
-            sql =  Regex.Replace(sql,pattern,"");
+            sql =  Regex.Replace(sql, remarkPattern, "");
             return sql;
         }
-
+        /// <summary>
+        /// sql注释着色
+        /// </summary>
+        /// <param name="text"></param>
+        public void SetTextColor()
+        {
+            if (string.IsNullOrWhiteSpace(richTextBox1.Text))
+            {
+                return;
+            }
+            //注释变色
+            MatchCollection mes = Regex.Matches(richTextBox1.Text, remarkPattern);
+            if (mes.Count > 0)
+            {
+                for (int i = 0; i < mes.Count; i++)
+                {
+                    int index = mes[i].Index;
+                    richTextBox1.Select(index, mes[i].Value.Length);
+                    richTextBox1.SelectionColor = Color.Gray;
+                }
+            }
+        }
+        /// <summary>
+        /// 行文本注释着色
+        /// </summary>
+        /// <param name="lineText"></param>
+        /// <param name="lineFirstCharIndex"></param>
         public void SetLineColor(string lineText,int lineFirstCharIndex)
         {
             if (string.IsNullOrWhiteSpace(lineText))
@@ -288,6 +314,10 @@ namespace FreesqlGenCode
             for (int i = 0; i < keyWordsMatch.Count; i++)
             {
                 string keyWord = keyWordsMatch[i].Value;
+                if (string.IsNullOrWhiteSpace(keyWord))
+                {
+                    continue;
+                }
                 int Index = keyWordsMatch[i].Index;
                 int keyWordLeftIndex = lineFirstCharIndex + Index;
                 if (keyWordsNotSpace.Contains(keyWord.Trim()))
@@ -384,6 +414,47 @@ namespace FreesqlGenCode
                 richTextBox1.SelectionColor = richTextBox1.ForeColor;
             }
             richTextBox1.Select(selectionStart, 0);
+        }
+
+        private void richTextBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Control && e.KeyCode == Keys.V)
+            {
+                e.Handled = true;//屏蔽Ctrl+ V组合按键
+
+                DataFormats.Format myFormat = DataFormats.GetFormat(DataFormats.Text);
+                richTextBox1.Paste(myFormat);
+
+                int initSelectionStart = richTextBox1.SelectionStart;
+                
+                string pattern = string.Join("|",keyWordsNotSpace); //关键字匹配
+                MatchCollection keyWordsMatch = Regex.Matches(richTextBox1.Text, pattern);
+                for (int i = 0; i < keyWordsMatch.Count; i++)
+                {
+                    string keyWord = keyWordsMatch[i].Value;
+                    int keyWordLeftIndex = keyWordsMatch[i].Index;
+                    //左边
+                    if (keyWordLeftIndex > 0)
+                    {
+                        if (!char.IsWhiteSpace(richTextBox1.Text[keyWordLeftIndex - 1]))
+                        {
+                            continue;
+                        }
+                    }
+                    //右边
+                    if(keyWordLeftIndex + keyWord.Length < richTextBox1.TextLength)
+                    {
+                        if (!char.IsWhiteSpace(richTextBox1.Text[keyWordLeftIndex+keyWord.Length]))
+                        {
+                            continue;
+                        }
+                    }
+                    richTextBox1.Select(keyWordLeftIndex, keyWord.Length);
+                    richTextBox1.SelectionColor = Color.Blue;
+                }
+                SetTextColor();
+                richTextBox1.Select(initSelectionStart, 0);
+            }
         }
     }
 }

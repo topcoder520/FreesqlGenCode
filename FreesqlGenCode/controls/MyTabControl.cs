@@ -88,6 +88,10 @@ namespace FreesqlGenCode.controls
         protected override void OnSelectedIndexChanged(EventArgs e)
         {
             base.OnSelectedIndexChanged(e);
+            if(this.SelectedIndex == -1)
+            {
+                this.SelectedIndex = 0;
+            }
             AddTabPageState(this.TabPages[this.SelectedIndex]);
         }
 
