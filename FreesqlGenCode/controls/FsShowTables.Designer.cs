@@ -306,18 +306,10 @@ namespace FreesqlGenCode.controls
             }
         }
 
-        private List<string> TempQueryField;
-
         public string GetSql(FsTableControl firstNode,EnumDatabase enumDatabase)
         {
-            if(TempQueryField == null)
-            {
-                TempQueryField = new List<string>();
-            }
-            else
-            {
-                TempQueryField.Clear();
-            }
+            List<string> TempQueryField = new List<string>();
+
             StringBuilder selectBuilder = new StringBuilder();
             selectBuilder.AppendLine(" SELECT ");
             StringBuilder fieldBuilder = new StringBuilder();
@@ -346,7 +338,7 @@ namespace FreesqlGenCode.controls
                     }
                 }
             }
-            getsql(fieldBuilder,joinBuilder,firstNode,enumDatabase);
+            getsql(fieldBuilder,joinBuilder,firstNode,enumDatabase, TempQueryField);
             if(fieldBuilder.Length == 0)
             {
                 string tableName = fsLine.GetEndTableName();
@@ -368,7 +360,7 @@ namespace FreesqlGenCode.controls
             return selectBuilder.ToString();
         }
 
-        private void getsql(StringBuilder fields,StringBuilder joinTables,FsTableControl parentNode,EnumDatabase enumDatabase)
+        private void getsql(StringBuilder fields,StringBuilder joinTables,FsTableControl parentNode,EnumDatabase enumDatabase,List<string> TempQueryField)
         {
             if (parentNode.NextNodeList.Count == 0)
             {
@@ -399,7 +391,7 @@ namespace FreesqlGenCode.controls
                     }
                 }
                 joinTables.AppendLine(" "+fsLine.ToString());
-                getsql(fields,joinTables,node,enumDatabase);
+                getsql(fields,joinTables,node,enumDatabase, TempQueryField);
             }
         }
 
@@ -417,6 +409,7 @@ namespace FreesqlGenCode.controls
                 }
                 break;
             }
+            lst.Add(tempItem);
             return tempItem;
         }
         /// <summary>
@@ -430,8 +423,7 @@ namespace FreesqlGenCode.controls
             {
                 foreach (var field in node.QueryFields)
                 {
-                    string str =  GetSingleString(lstQueryField, field);
-                    lstQueryField.Add(str);
+                    lstQueryField.Add(field);
                 }
             }
             if(node.NextNodeList.Count == 0)

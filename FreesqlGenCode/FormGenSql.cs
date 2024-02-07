@@ -23,7 +23,7 @@ namespace FreesqlGenCode
             this.richTextBox1.LanguageOption = RichTextBoxLanguageOptions.UIFonts; 
         }
 
-        public List<string> lstQueryField { get; set; }
+        //public List<string> lstQueryField { get; set; }
 
         protected override void OnLoad(EventArgs e)
         {
@@ -133,10 +133,6 @@ namespace FreesqlGenCode
         {
             this.dataGridView1.Columns.Clear();
             this.dataGridView1.Rows.Clear();
-            for (int i = 0; i < lstQueryField.Count; i++)
-            {
-                this.dataGridView1.Columns.Add(lstQueryField[i], lstQueryField[i]);
-            }
             FsDatabase fsDatabase = (FsDatabase)this.Tag;
             if(fsDatabase != null)
             {
@@ -155,15 +151,9 @@ namespace FreesqlGenCode
                             {
                                 if (dt != null)
                                 {
-                                    if (lstQueryField.Count == 0)
+                                    for (int i = 0; i < dt.Columns.Count; i++)
                                     {
-                                        for (int i = 0; i < dt.Columns.Count; i++)
-                                        {
-                                            dataGridView1.Columns.Add(dt.Columns[i].ColumnName, dt.Columns[i].ColumnName);
-                                        }
-                                    }
-                                    for (int i = 0; i < dataGridView1.Columns.Count; i++)
-                                    {
+                                        dataGridView1.Columns.Add(dt.Columns[i].ColumnName, dt.Columns[i].ColumnName);
                                         dataGridView1.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
                                     }
                                     for (int i = 0; i < dt.Rows.Count; i++)
