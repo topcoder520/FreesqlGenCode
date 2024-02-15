@@ -41,6 +41,8 @@ namespace FreesqlGenCode
                 " inner "," INNER "," IS "," is "," NULL "," null "," NOT "," not "," LIKE "," like ",
                 " limit "," LIMIT "," OR "," or "," order "," ORDER "," right "," RIGHT "," ROWNUM ",
                 " rownum "," TOP "," top "," UNION "," union "," ALL "," all "," VIEW "," view ",
+                " avg "," AVG "," count "," COUNT "," min "," MIN "," max "," MAX "," sum "," SUM ",
+
                 };
         private static string[] keyWordsNotSpace = keyWords.Select(a=>a.Trim()).ToArray();
 
