@@ -299,7 +299,7 @@ namespace FreesqlGenCode
                 richTextBox1.Select(selectionStart, 0);
                 return;
             }
-            string pattern = " {0,}[A-Za-z]* {1,}"; //关键字匹配
+            string pattern = @"\b[A-Za-z]{2,}\b\s"; //关键字匹配
             MatchCollection keyWordsMatch = Regex.Matches(lineText,pattern);
             for (int i = 0; i < keyWordsMatch.Count; i++)
             {
