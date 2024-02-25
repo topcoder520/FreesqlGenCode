@@ -24,6 +24,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RazorTemplates", "RazorTemp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenTemplate", "GenTemplate\GenTemplate.csproj", "{1C848E5F-64CB-4590-AA6C-DFC90C12C003}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "GenCodeSetup", "GenCodeSetup\GenCodeSetup.vdproj", "{A6C69E22-AAB2-42BD-AA6A-503863018639}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,6 +60,8 @@ Global
 		{1C848E5F-64CB-4590-AA6C-DFC90C12C003}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C848E5F-64CB-4590-AA6C-DFC90C12C003}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C848E5F-64CB-4590-AA6C-DFC90C12C003}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6C69E22-AAB2-42BD-AA6A-503863018639}.Debug|Any CPU.ActiveCfg = Debug
+		{A6C69E22-AAB2-42BD-AA6A-503863018639}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
