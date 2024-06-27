@@ -1,4 +1,6 @@
 using FreesqlGenCode.controls;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace FreesqlGenCode
 {
@@ -10,11 +12,23 @@ namespace FreesqlGenCode
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
+            MainAsync().GetAwaiter().GetResult();
+        }
+
+        private static async Task MainAsync()
+        {
+            var host = Host.CreateDefaultBuilder()
+                .ConfigureServices(services =>
+                {
+                    services.AddSingleton<Form1>();
+                })
+                .Build();
+            await host.StartAsync().ConfigureAwait(true);
+
             ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
-           // Application.Run(new FormTestLine());
+            Application.Run(host.Services.GetRequiredService<Form1>());
+
+            await host.StopAsync().ConfigureAwait(true);
         }
     }
 }
